@@ -1,10 +1,12 @@
+"use client"
+
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import styles from './CreateRoom.module.scss';
+import styles from './NewRoom.module.scss';
 
-export default function CreateRoom() {
+export default function NewRoom() {
   const router = useRouter();
   const [roomName, setRoomName] = useState('');
   const [votingSystem, setVotingSystem] = useState('fibonacci');

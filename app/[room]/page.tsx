@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { db } from '../../lib/firebase';
 import { doc, onSnapshot, updateDoc, collection, setDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import styles from './Room.module.scss';
@@ -7,11 +7,10 @@ import VotingBoard from '../../components/VotingBoard/VotingBoard';
 import PlayerList from '../../components/PlayerList/PlayerList';
 import type { Room, Player } from "../../types"
 
+export interface RoomProps { room: string }
 
-
-export default function Room() {
+export function Room({ room }: RoomProps) {
   const router = useRouter();
-  const { room } = router.query;
 
   const [roomData, setRoomData] = useState<Room | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -144,4 +143,19 @@ export default function Room() {
       )}
     </div>
   );
+}
+
+export interface RoomWrapperProps {
+  params: Promise<{ room: string }>
+}
+
+export default async function RoomWrapper({
+  params,
+}: RoomWrapperProps) {
+  const room = (await params).room;
+
+  if (!room) return;
+
+  return <Room room={room} />
+
 }

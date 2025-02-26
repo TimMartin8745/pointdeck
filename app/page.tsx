@@ -7,8 +7,8 @@ export default function Home() {
     <div className={styles.container}>
       <h1>Welcome to PointDeck</h1>
       <p>Your planning poker tool.</p>
-      <Link href="/room/create-room">
-        <a>Create New Room</a>
+      <Link href="/new">
+      Create New Room
       </Link>
     </div>
   );
