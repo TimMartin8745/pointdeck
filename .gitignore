@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase
+pointdeck-548ed-firebase-adminsdk-fbsvc-b8abdd8de3.ts
