@@ -1,61 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { db } from '../../lib/firebase';
-import { doc, onSnapshot, updateDoc, collection, setDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
-import styles from './Room.module.scss';
-import VotingBoard from '../../components/VotingBoard/VotingBoard';
-import PlayerList from '../../components/PlayerList/PlayerList';
-import type { Room, Player } from "../../types"
+"use client";
 
-export interface RoomProps { room: string }
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabase";
+import styles from "./Room.module.scss";
+import VotingBoard from "../../components/VotingBoard/VotingBoard";
+import PlayerList from "../../components/PlayerList/PlayerList";
+import type { Room, Player } from "../../types";
 
-export function Room({ room }: RoomProps) {
+export default function Room({
+  params,
+}: {
+  params: Promise<{ room: string }>;
+}) {
   const router = useRouter();
 
+  const [room, setRoom] = useState<string | null>(null);
   const [roomData, setRoomData] = useState<Room | null>(null);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players] = useState<Player[]>([]);
   const [joined, setJoined] = useState(false);
-  const [playerName, setPlayerName] = useState('');
-  const [playerId, setPlayerId] = useState('');
-  
+  const [playerName, setPlayerName] = useState("");
+  const [playerId, setPlayerId] = useState("");
+
+  // Load room
+  useEffect(() => {
+    async function getRoom() {
+      const room = (await params).room;
+      setRoom(room);
+    }
+
+    void getRoom();
+  }, [params]);
+
   // Load room data
   useEffect(() => {
     if (!room) return;
-    const roomRef = doc(db, 'rooms', room as string);
-    const unsubscribe = onSnapshot(roomRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data() as Omit<Room, "id">;
-        setRoomData({ id: docSnap.id, ...data });
-        // Check if room was created more than 1 day ago
-        if(data.createdAt){
-          const createdAt = new Date(data.createdAt);
-          const now = new Date();
-          if((now.getTime() - createdAt.getTime()) > 24 * 60 * 60 * 1000){
-            router.push('/room/new');
-          }
-        }
+
+    async function getRoomData() {
+      const { data, error } = await supabase
+        .from("rooms")
+        .select("*")
+        .eq("id", room)
+        .single();
+
+      if (error || !data) {
+        console.error(error);
+        router.push("/new");
       } else {
-        router.push('/room/new');
+        setRoomData(data);
+        // Redirect if room is older than 1 day
+        const createdAt = new Date(data.created_at);
+        if (new Date().getTime() - createdAt.getTime() > 24 * 60 * 60 * 1000) {
+          router.push("/new");
+        }
       }
-    });
-    return () => unsubscribe();
+    }
+
+    void getRoomData();
   }, [room, router]);
 
-  // Subscribe to players list
-  useEffect(() => {
-    if (!room) return;
-    const playersRef = collection(db, 'rooms', room as string, 'players');
-    const q = query(playersRef, orderBy('createdAt'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const playersList: Player[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data() as Omit<Player, "id">;
-        playersList.push({ id: doc.id, ...data });
-      });
-      setPlayers(playersList);
-    });
-    return () => unsubscribe();
-  }, [room]);
+  // // Subscribe to players list
+  // useEffect(() => {
+  //   if (!room) return;
+  //   const playersRef = collection(db, 'rooms', room as string, 'players');
+  //   const q = query(playersRef, orderBy('createdAt'));
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     const playersList: Player[] = [];
+  //     querySnapshot.forEach((doc) => {
+  //       const data = doc.data() as Omit<Player, "id">;
+  //       playersList.push({ id: doc.id, ...data });
+  //     });
+  //     setPlayers(playersList);
+  //   });
+  //   return () => unsubscribe();
+  // }, [room]);
 
   // Handle joining the room
   const handleJoin = async (e: React.FormEvent) => {
@@ -63,46 +81,37 @@ export function Room({ room }: RoomProps) {
     if (!room) return;
     // Generate or retrieve a unique player id for this room
     const storedPlayerId = localStorage.getItem(`playerId_${room}`);
-    const id = storedPlayerId || `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-    if(!storedPlayerId){
+    const id =
+      storedPlayerId || `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    if (!storedPlayerId) {
       localStorage.setItem(`playerId_${room}`, id);
     }
     setPlayerId(id);
-    const playerRef = doc(db, 'rooms', room as string, 'players', id);
-    await setDoc(playerRef, {
-      name: playerName,
-      vote: null,
-      isSpectator: false,
-      createdAt: serverTimestamp(),
-    });
     setJoined(true);
   };
 
   // Handle vote submission
-  const handleVote = async (vote: number | string) => {
+  const handleVote = async () => {
     if (!room || !playerId) return;
-    const playerRef = doc(db, 'rooms', room as string, 'players', playerId);
-    await updateDoc(playerRef, { vote });
   };
 
   // Reveal votes after a 3-second delay
   const handleRevealVotes = async () => {
     if (!room) return;
-    const roomRef = doc(db, 'rooms', room as string);
     setTimeout(async () => {
-      await updateDoc(roomRef, { isRevealed: true });
+      // await updateDoc(roomRef, { isRevealed: true });
     }, 3000);
   };
 
   // Reset round: clear votes and hide results
   const handleReset = async () => {
     if (!room) return;
-    const roomRef = doc(db, 'rooms', room as string);
-    await updateDoc(roomRef, { isRevealed: false });
-    players.forEach(async (player) => {
-      const playerRef = doc(db, 'rooms', room as string, 'players', player.id);
-      await updateDoc(playerRef, { vote: null });
-    });
+    // const roomRef = doc(db, 'rooms', room as string);
+    // await updateDoc(roomRef, { isRevealed: false });
+    // players.forEach(async (player) => {
+    //   const playerRef = doc(db, 'rooms', room as string, 'players', player.id);
+    //   await updateDoc(playerRef, { vote: null });
+    // });
   };
 
   if (!roomData) {
@@ -125,37 +134,25 @@ export function Room({ room }: RoomProps) {
         </form>
       ) : (
         <>
-          <VotingBoard 
-            votingSystem={roomData.votingSystem} 
-            onVote={handleVote} 
-            isRevealed={roomData.isRevealed} 
+          <VotingBoard
+            votingSystem={roomData.voting_system}
+            onVote={handleVote}
+            isRevealed={Boolean(roomData.revealed)}
           />
           <div className={styles.controls}>
-            {!roomData.isRevealed && (
+            {!roomData.revealed && (
               <button onClick={handleRevealVotes}>Reveal Votes</button>
             )}
-            {roomData.isRevealed && (
+            {roomData.revealed && (
               <button onClick={handleReset}>Reset Round</button>
             )}
           </div>
-          <PlayerList players={players} isRevealed={roomData.isRevealed} />
+          <PlayerList
+            players={players}
+            isRevealed={Boolean(roomData.revealed)}
+          />
         </>
       )}
     </div>
   );
-}
-
-export interface RoomWrapperProps {
-  params: Promise<{ room: string }>
-}
-
-export default async function RoomWrapper({
-  params,
-}: RoomWrapperProps) {
-  const room = (await params).room;
-
-  if (!room) return;
-
-  return <Room room={room} />
-
 }

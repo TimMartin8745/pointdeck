@@ -1,28 +1,41 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { db } from '../../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import styles from './NewRoom.module.scss';
+import type { FormEvent } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabase";
+import styles from "./NewRoom.module.scss";
+import { Room, VotingSystem } from "@/types";
 
 export default function NewRoom() {
   const router = useRouter();
-  const [roomName, setRoomName] = useState('');
-  const [votingSystem, setVotingSystem] = useState('fibonacci');
+  const [roomName, setRoomName] = useState("");
+  const [votingSystem, setVotingSystem] = useState<VotingSystem>(
+    VotingSystem.Fibonacci
+  );
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const docRef = await addDoc(collection(db, 'rooms'), {
+      const room: Room = {
         name: roomName,
-        votingSystem,
-        createdAt: serverTimestamp(),
-        isRevealed: false,
-      });
-      router.push(`/room/${docRef.id}`);
+        voting_system: votingSystem,
+        revealed: false,
+        votes: {},
+      };
+      const { data, error } = await supabase
+        .from("rooms")
+        .insert([room])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating room:", error.message);
+      } else if (data) {
+        router.push(`/${data.id}`);
+      }
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error("Error creating room:", error);
     }
   };
 
@@ -43,11 +56,11 @@ export default function NewRoom() {
           <label>Voting System</label>
           <select
             value={votingSystem}
-            onChange={(e) => setVotingSystem(e.target.value)}
+            onChange={(e) => setVotingSystem(e.target.value as VotingSystem)}
           >
-            <option value="fibonacci">Fibonacci</option>
-            <option value="tshirts">T-Shirts</option>
-            <option value="powers">Powers of 2</option>
+            <option value={VotingSystem.Fibonacci}>Fibonacci</option>
+            <option value={VotingSystem.T_Shirts}>T-Shirts</option>
+            <option value={VotingSystem.Powers_Of_2}>Powers of 2</option>
           </select>
         </div>
         <button type="submit">Create Room</button>
