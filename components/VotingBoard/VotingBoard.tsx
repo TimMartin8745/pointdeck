@@ -11,11 +11,11 @@ interface VotingBoardProps {
 const getVotingValues = (system: string): (number | string)[] => {
   switch(system) {
     case 'fibonacci':
-      return [1, 2, 3, 5, 8, 13, 21];
+      return ["1", "2", "3", "5", "8", "13", "21"];
     case 'tshirts':
       return ['XS', 'S', 'M', 'L', 'XL'];
     case 'powers':
-      return [1, 2, 4, 8, 16, 32, 64];
+      return ["1", "2", "4", "8", "16", "32", "64"];
     default:
       return [];
   }

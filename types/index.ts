@@ -4,7 +4,7 @@ export enum VotingSystem {
   Powers_Of_2 = "powers",
 }
 
-export type Votes = Record<string, number>
+export type Votes = Record<string, string>
 
 export interface Room {
   id?: string; // uuid
