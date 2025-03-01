@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './VoteCard.module.scss';
+import type React from "react";
+import styles from "./VoteCard.module.scss";
 
 interface VoteCardProps {
   value: number | string;
@@ -9,12 +9,13 @@ interface VoteCardProps {
 
 const VoteCard: React.FC<VoteCardProps> = ({ value, onClick, disabled }) => {
   return (
-    <div
-      className={`${styles.card} ${disabled ? styles.disabled : ''}`}
+    <button
+      className={`${styles.card} ${disabled ? styles.disabled : ""}`}
       onClick={!disabled ? onClick : undefined}
+      type={"button"}
     >
       {value}
-    </div>
+    </button>
   );
 };
 

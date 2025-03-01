@@ -1,0 +1,19 @@
+// Variables for the dark mode theme
+@import "./colors.module.scss";
+
+// text
+$dark-text-primary: $grey-50;
+$dark-text-secondary: $grey-100;
+$dark-text-disabled: $grey-300;
+
+// divider
+$dark-divider-main: $grey-600;
+
+// background
+$dark-background: $black;
+$dark-background-layer-0: $grey-900;
+$dark-background-layer-1: $grey-800;
+$dark-background-layer-2: $grey-700;
+$dark-background-layer-3: $grey-600;
+$dark-background-layer-4: $grey-500;
+$dark-background-layer-5: $grey-400;

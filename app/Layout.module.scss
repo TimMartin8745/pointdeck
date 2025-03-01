@@ -1,0 +1,32 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.body {
+  display: grid;
+  grid-template-rows: auto max-content;
+  background: theme.$background-layer-0;
+  font-family: var(--font-rubik-sans);
+  color: theme.$text-primary;
+}
+
+.footer {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  padding: 8px 12px;
+
+  & a {
+    all: unset;
+    color: theme.$text-primary;
+    transition: all 0.2s ease;
+    opacity: 0.2;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+
+      &.sponsor {
+        color: theme.$red-main;
+      }
+    }
+  }
+}

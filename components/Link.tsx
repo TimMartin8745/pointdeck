@@ -1,0 +1,37 @@
+"use client";
+
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+
+const Link: typeof NextLink = (({ children, ...props }) => {
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const router = useRouter();
+
+  return (
+    <NextLink
+      ref={linkRef}
+      prefetch={true}
+      onMouseDown={(e) => {
+        const url = new URL(String(props.href), window.location.href);
+        console.log(url.origin, window.location.origin);
+        if (
+          url.origin === window.location.origin &&
+          e.button === 0 &&
+          !e.altKey &&
+          !e.ctrlKey &&
+          !e.metaKey &&
+          !e.shiftKey
+        ) {
+          e.preventDefault();
+          router.push(String(props.href));
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </NextLink>
+  );
+}) as typeof NextLink;
+
+export default Link;

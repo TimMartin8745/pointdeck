@@ -1,15 +1,22 @@
-import React from 'react';
-import Link from 'next/link';
-import styles from './Home.module.scss';
+import React from "react";
 
-export default function Home() {
+import Button from "@/components/Button/Button";
+
+import styles from "./Home.module.scss";
+import { ThemeVariant } from "@/theme";
+
+export default async function Home() {
   return (
     <div className={styles.container}>
-      <h1>Welcome to PointDeck</h1>
-      <p>Your planning poker tool.</p>
-      <Link href="/new">
-      Create New Room
-      </Link>
+      <div>
+        <h1>Welcome to PointDeck</h1>
+        <p>A free, real-time planning poker tool.</p>
+        <Button
+          href="/new"
+          text="Create new room"
+          variant={ThemeVariant.Indigo}
+        />
+      </div>
     </div>
   );
 }
