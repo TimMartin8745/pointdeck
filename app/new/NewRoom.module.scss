@@ -20,3 +20,8 @@
   }
 }
 
+.theme {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 44px);
+  gap: 2px;
+}

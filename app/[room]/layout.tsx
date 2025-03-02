@@ -42,7 +42,5 @@ export default async function PokerRoomLayout({
     redirect(`/new?room=${room}`);
   }
 
-  console.log(roomData);
-
   return <div className={styles.container}>{children}</div>;
 }

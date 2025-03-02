@@ -3,7 +3,7 @@ import styles from "./NewUser.module.scss";
 import DynamicNewRoomForm from "./dynamic";
 import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
-import { userSchema } from "@/types";
+import { roomSchema, userSchema } from "@/types";
 
 export default async function NewUser({
   params,
@@ -11,6 +11,27 @@ export default async function NewUser({
   params: Promise<{ room: string }>;
 }) {
   const room = (await params).room;
+
+  const { data, error } = await supabase
+    .from("rooms")
+    .select("*")
+    .eq("id", room)
+    .single();
+
+  if (error || !data) {
+    console.error(error);
+    redirect(`/new?room=${room}`);
+  }
+
+  // Redirect if room data is not valid
+  const {
+    data: roomData,
+    error: zodError,
+    success,
+  } = roomSchema.safeParse(data);
+  if (!success) {
+    console.error(zodError);
+  }
 
   const createNewRoom = async (formData: FormData) => {
     "use server";
@@ -48,7 +69,10 @@ export default async function NewUser({
     <div className={styles.container}>
       <h1>Enter your details</h1>
       <Suspense>
-        <DynamicNewRoomForm newUserAction={createNewRoom} />
+        <DynamicNewRoomForm
+          newUserAction={createNewRoom}
+          theme={roomData?.theme}
+        />
       </Suspense>
     </div>
   );

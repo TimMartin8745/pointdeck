@@ -8,7 +8,7 @@ import { ThemeVariant } from "@/theme";
 export default async function Home() {
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.content}>
         <h1>Welcome to PointDeck</h1>
         <p>A free, real-time planning poker tool.</p>
         <Button

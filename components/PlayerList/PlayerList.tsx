@@ -25,7 +25,8 @@ const PlayerList: React.FC<PlayerListProps> = ({ users, isRevealed }) => {
       <ul>
         {players.map((player) => (
           <li key={player.user_id}>
-            <span>{player.name}</span> -
+            <span>{player.name}</span>
+            {" - "}
             <span>
               {isRevealed
                 ? player.vote !== null

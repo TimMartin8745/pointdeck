@@ -2,15 +2,15 @@
 
 import clsx from "clsx";
 
-import type { ThemeVariant } from "@/theme";
 import { DEFAULT_THEME } from "@/theme";
+import type { ThemeOption } from "@/types";
 import Link from "../Link";
 
 import styles from "./Button.module.scss";
 
 interface BaseButton {
   text: string;
-  variant?: ThemeVariant;
+  variant?: ThemeOption;
 }
 
 interface LinkButton extends BaseButton {

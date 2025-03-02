@@ -4,6 +4,10 @@ import { supabase } from "@/lib/supabase";
 import DynamicPokerRoom from "./dynamic";
 import type { Room } from "@/types";
 import { redirect } from "next/navigation";
+import type {
+  RealtimePostgresChangesFilter,
+  RealtimePostgresUpdatePayload,
+} from "@supabase/supabase-js";
 
 export default async function PokerRoom({
   params,
@@ -32,6 +36,22 @@ export default async function PokerRoom({
   if (!user) {
     redirect(`/${room}/user`);
   }
+
+  const databaseFilter: RealtimePostgresChangesFilter<"UPDATE"> = {
+    schema: "public",
+    table: "messages",
+    filter: `id=eq.${room}`,
+    event: "UPDATE",
+  };
+
+  supabase
+    .channel(room)
+    .on(
+      "postgres_changes",
+      databaseFilter,
+      (payload: RealtimePostgresUpdatePayload<Room>) => console.log(payload)
+    )
+    .subscribe();
 
   return (
     <Suspense>

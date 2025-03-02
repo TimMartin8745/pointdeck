@@ -1,19 +1,19 @@
 // Variables for the light mode theme
-@import "./colors.module.scss";
+@use "./colors.module.scss" as colors;
 
 // text
-$light-text-primary: $grey-900;
-$light-text-secondary: $grey-600;
-$light-text-disabled: $grey-400;
+$text-primary: colors.$grey-900;
+$text-secondary: colors.$grey-600;
+$text-disabled: colors.$grey-400;
 
 // divider
-$light-divider-main: $grey-100;
+$divider-main: colors.$grey-100;
 
 // background
-$light-background: $white;
-$light-background-layer-0: $grey-50;
-$light-background-layer-1: $grey-100;
-$light-background-layer-2: $grey-200;
-$light-background-layer-3: $grey-300;
-$light-background-layer-4: $grey-400;
-$light-background-layer-5: $grey-500;
+$background: colors.$white;
+$background-layer-0: colors.$grey-50;
+$background-layer-1: colors.$grey-100;
+$background-layer-2: colors.$grey-200;
+$background-layer-3: colors.$grey-300;
+$background-layer-4: colors.$grey-400;
+$background-layer-5: colors.$grey-500;

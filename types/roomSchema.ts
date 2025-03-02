@@ -39,7 +39,7 @@ export const themeOptions = [
 
 export const themeOptionSchema = z.enum(themeOptions);
 
-export type ThemeOption = z.infer<typeof votingSystemSchema>;
+export type ThemeOption = z.infer<typeof themeOptionSchema>;
 
 // Room
 export const roomSchema = z.object({

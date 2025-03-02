@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
-import { roomPacketSchema, roomSchema } from "@/types";
+import { roomPacketSchema, roomSchema, themeOptions } from "@/types";
 
 import DynamicNewRoomForm from "./dynamic";
 
@@ -20,16 +20,28 @@ export default async function NewRoom({
     let redirectPath: string | null = null;
 
     try {
+      let theme = formData.get("theme");
+      if (theme === "random") {
+        const randomOptions = themeOptions.filter(
+          (option) => !option.includes("grey")
+        );
+        const randomIndex = Math.floor(Math.random() * randomOptions.length);
+        theme = randomOptions[randomIndex];
+      }
+
       const roomData = {
         ...(room ? { id: room, created_at: new Date().toISOString() } : {}),
         name: formData.get("roomName"),
         voting_system: formData.get("votingSystem"),
-        theme: formData.get("theme"),
+        theme: theme,
         revealed: false,
         votes: [],
       };
 
       const validRoomData = roomPacketSchema.parse(roomData);
+
+      console.log("Upserting...");
+      console.dir();
 
       const { data, error } = await supabase
         .from("rooms")

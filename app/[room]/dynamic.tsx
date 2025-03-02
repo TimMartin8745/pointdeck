@@ -58,10 +58,6 @@ export default function DynamicPokerRoom({
     // });
   };
 
-  if (!roomData) {
-    return <div>Loading room...</div>;
-  }
-
   return (
     <>
       <h1>{roomData.name}</h1>
@@ -73,10 +69,18 @@ export default function DynamicPokerRoom({
         />
         <div className={styles.controls}>
           {!roomData.revealed && (
-            <Button onClick={handleRevealVotes} text="Reveal Votes" />
+            <Button
+              onClick={handleRevealVotes}
+              text="Reveal Votes"
+              variant={roomData.theme}
+            />
           )}
           {roomData.revealed && (
-            <Button onClick={handleReset} text="Reset Round" />
+            <Button
+              onClick={handleReset}
+              text="Reset Round"
+              variant={roomData.theme}
+            />
           )}
         </div>
         <PlayerList users={users} isRevealed={Boolean(roomData.revealed)} />

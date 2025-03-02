@@ -3,10 +3,13 @@
 import Button from "@/components/Button/Button";
 
 import styles from "./NewUser.module.scss";
+import type { ThemeOption } from "@/types";
 
 export default function DynamicNewUserForm({
+  theme,
   newUserAction,
 }: {
+  theme?: ThemeOption;
   newUserAction: (formData: FormData) => void;
 }) {
   return (
@@ -23,7 +26,7 @@ export default function DynamicNewUserForm({
           <input type="checkbox" name="spectator" />
         </label>
       </div>
-      <Button type="submit" text="Enter Room" />
+      <Button type="submit" text="Enter Room" variant={theme} />
     </form>
   );
 }

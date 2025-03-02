@@ -4,6 +4,7 @@ import { themeOptions, votingSystemMap, votingSystems } from "@/types";
 import Button from "@/components/Button/Button";
 
 import styles from "./NewRoom.module.scss";
+import ThemeOption from "@/components/ThemeOption/ThemeOption";
 
 export default function DynamicNewRoomForm({
   newRoomAction,
@@ -31,16 +32,25 @@ export default function DynamicNewRoomForm({
         </label>
       </div>
       <div className={styles.field}>
-        <label>
-          Room Theme
-          <select name="theme">
-            {themeOptions.map((theme) => (
-              <option key={theme} value={theme}>
-                {theme}
-              </option>
+        <fieldset className={styles.theme}>
+          <legend>Select a room theme:</legend>
+          <ThemeOption
+            key={"random"}
+            name="theme"
+            value={"random"}
+            defaultValue={"random"}
+          />
+          {themeOptions
+            .filter((option) => !option.includes("grey"))
+            .map((theme) => (
+              <ThemeOption
+                key={theme}
+                name="theme"
+                value={theme}
+                defaultValue={"random"}
+              />
             ))}
-          </select>
-        </label>
+        </fieldset>
       </div>
       <Button type="submit" text="Create Room" />
     </form>
