@@ -16,7 +16,7 @@ const VoteSpread = ({ spread, theme }: VoteSpreadProps) => {
           <div key={key} className={styles.item}>
             <div className={styles.bar}>
               <div
-                className={`${styles.fill}-${theme}`}
+                className={styles[`fill-${theme}`]}
                 style={{ height: `calc(100% * ${value} / ${max})` }}
               />
             </div>

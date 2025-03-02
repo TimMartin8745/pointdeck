@@ -5,7 +5,7 @@ import { setTheme, ThemeMode } from "../theme/theme";
 
 const Theme = () => {
   useEffect(() => {
-    setTheme(ThemeMode.Default);
+    setTheme(ThemeMode.Light);
   }, []);
 
   return <></>;
