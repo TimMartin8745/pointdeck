@@ -1,0 +1,23 @@
+@use "../theme/theme.module.scss" as theme;
+
+.container {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: grid;
+  justify-content: center;
+  text-align: center;
+  & h1 {
+    margin: 0;
+    margin-bottom: 4px;
+  }
+
+  & a {
+    justify-self: center;
+    width: max-content;
+    margin: 8px;
+  }
+}

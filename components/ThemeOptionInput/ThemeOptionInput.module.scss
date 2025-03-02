@@ -1,0 +1,197 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.themeOption {
+  display: inline-block;
+  height: max-content;
+  width: max-content;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  & label {
+    display: inline-block;
+    position: relative;
+    height: max-content;
+    width: max-content;
+    margin: 0 !important;
+    padding: 3px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: theme.$divider-main;
+    }
+
+    & .border {
+      height: max-content;
+      width: max-content;
+      border-radius: 9px;
+      padding: 3px;
+      background-color: theme.$background-layer-0;
+
+      & .option {
+        display: grid;
+        position: relative;
+        justify-items: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+
+        & .icon {
+          position: absolute;
+          color: theme.$grey-400;
+        }
+      }
+    }
+  }
+}
+
+.theme {
+  &-random {
+    & input:checked + label {
+      background-color: theme.$grey-200;
+    }
+
+    & .option {
+      background-color: theme.$grey-100;
+    }
+  }
+
+  // &-grey {
+  //   & input:checked + label,
+  //   & .option {
+  //     background-color: theme.$grey-400;
+  //   }
+  // }
+
+  // &-cool-grey {
+  //   & input:checked + label,
+  //   & .option {
+  //     background-color: theme.$cool-grey-400;
+  //   }
+  // }
+
+  // &-warm-grey {
+  //   & input:checked + label,
+  //   & .option {
+  //     background-color: theme.$warm-grey-400;
+  //   }
+  // }
+
+  &-brown {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$brown-400;
+    }
+  }
+
+  &-red {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$red-400;
+    }
+  }
+
+  &-crimson {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$crimson-400;
+    }
+  }
+
+  &-orange {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$orange-400;
+    }
+  }
+
+  &-amber {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$amber-400;
+    }
+  }
+
+  &-yellow {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$yellow-400;
+    }
+  }
+
+  &-lime {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$lime-400;
+    }
+  }
+
+  &-light-green {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$light-green-400;
+    }
+  }
+
+  &-green {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$green-400;
+    }
+  }
+
+  &-teal {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$teal-400;
+    }
+  }
+
+  &-cyan {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$cyan-400;
+    }
+  }
+
+  &-light-blue {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$light-blue-400;
+    }
+  }
+
+  &-blue {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$blue-400;
+    }
+  }
+
+  &-indigo {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$indigo-400;
+    }
+  }
+
+  &-purple {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$purple-400;
+    }
+  }
+
+  &-pink {
+    & input:checked + label,
+    & .option {
+      background-color: theme.$pink-400;
+    }
+  }
+}

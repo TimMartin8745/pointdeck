@@ -1,0 +1,29 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.results {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 12px;
+  margin-top: 1rem;
+  border: solid 2px theme.$divider-main;
+  border-radius: 8px;
+
+  legend {
+    margin-left: 4px;
+    padding: 0 4px;
+  }
+}
+
+.result {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+
+  & h2 {
+    margin: 0;
+  }
+}

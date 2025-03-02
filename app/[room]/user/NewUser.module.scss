@@ -1,0 +1,22 @@
+.container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  & label {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  & label {
+    margin-bottom: 0.5rem;
+  }
+}
+

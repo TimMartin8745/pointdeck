@@ -1,0 +1,111 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.spread {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.item {
+  display: grid;
+  grid-template-rows: auto max-content;
+  gap: 4px;
+  width: 16px;
+  text-align: center;
+
+  & h4 {
+    margin: 0;
+  }
+}
+
+.bar {
+  display: grid;
+  justify-self: center;
+  align-items: end;
+  width: 6px;
+  height: 44px;
+  background-color: theme.$divider-main;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.fill {
+  width: 100%;
+
+  // &-grey {
+  //     background-color: theme.$grey-400;
+  // }
+
+  // &-cool-grey {
+  //     background-color: theme.$cool-grey-400;
+  // }
+
+  // &-warm-grey {
+  //     background-color: theme.$warm-grey-400;
+  // }
+
+  &-brown {
+    background-color: theme.$brown-400;
+  }
+
+  &-red {
+    background-color: theme.$red-400;
+  }
+
+  &-crimson {
+    background-color: theme.$crimson-400;
+  }
+
+  &-orange {
+    background-color: theme.$orange-400;
+  }
+
+  &-amber {
+    background-color: theme.$amber-400;
+  }
+
+  &-yellow {
+    background-color: theme.$yellow-400;
+  }
+
+  &-lime {
+    background-color: theme.$lime-400;
+  }
+
+  &-light-green {
+    background-color: theme.$light-green-400;
+  }
+
+  &-green {
+    background-color: theme.$green-400;
+  }
+
+  &-teal {
+    background-color: theme.$teal-400;
+  }
+
+  &-cyan {
+    background-color: theme.$cyan-400;
+  }
+
+  &-light-blue {
+    background-color: theme.$light-blue-400;
+  }
+
+  &-blue {
+    background-color: theme.$blue-400;
+  }
+
+  &-indigo {
+    background-color: theme.$indigo-400;
+  }
+
+  &-purple {
+    background-color: theme.$purple-400;
+  }
+
+  &-pink {
+    background-color: theme.$pink-400;
+  }
+}

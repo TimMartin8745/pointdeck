@@ -1,0 +1,186 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.button {
+  all: unset;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.variant {
+  background: theme.$purple-400;
+
+  &-grey {
+    background: theme.$grey-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$grey-300;
+    }
+  }
+
+  &-cool-grey {
+    background: theme.$cool-grey-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$cool-grey-300;
+    }
+  }
+
+  &-warm-grey {
+    background: theme.$warm-grey-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$warm-grey-300;
+    }
+  }
+
+  &-brown {
+    background: theme.$brown-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$brown-300;
+    }
+  }
+
+  &-red {
+    background: theme.$red-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$red-300;
+    }
+  }
+
+  &-crimson {
+    background: theme.$crimson-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$crimson-300;
+    }
+  }
+
+  &-orange {
+    background: theme.$orange-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$orange-300;
+    }
+  }
+
+  &-amber {
+    background: theme.$amber-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$amber-300;
+    }
+  }
+
+  &-yellow {
+    background: theme.$yellow-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$yellow-300;
+    }
+  }
+
+  &-lime {
+    background: theme.$lime-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$lime-300;
+    }
+  }
+
+  &-light-green {
+    background: theme.$light-green-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$light-green-300;
+    }
+  }
+
+  &-green {
+    background: theme.$green-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$green-300;
+    }
+  }
+
+  &-teal {
+    background: theme.$teal-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$teal-300;
+    }
+  }
+
+  &-cyan {
+    background: theme.$cyan-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$cyan-300;
+    }
+  }
+
+  &-light-blue {
+    background: theme.$light-blue-400;
+    color: theme.$grey-900;
+
+    &:hover {
+      background: theme.$light-blue-300;
+    }
+  }
+
+  &-blue {
+    background: theme.$blue-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$blue-300;
+    }
+  }
+
+  &-indigo {
+    background: theme.$indigo-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$indigo-300;
+    }
+  }
+
+  &-purple {
+    background: theme.$purple-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$purple-300;
+    }
+  }
+
+  &-pink {
+    background: theme.$pink-400;
+    color: theme.$grey-50;
+
+    &:hover {
+      background: theme.$pink-300;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+// Variables for the light mode theme
+@use "./colors.module.scss" as colors;
+
+// text
+$text-primary: colors.$grey-900;
+$text-secondary: colors.$grey-600;
+$text-disabled: colors.$grey-400;
+
+// divider
+$divider-main: colors.$grey-100;
+
+// background
+$background: colors.$white;
+$background-layer-0: colors.$grey-50;
+$background-layer-1: colors.$grey-100;
+$background-layer-2: colors.$grey-200;
+$background-layer-3: colors.$grey-300;
+$background-layer-4: colors.$grey-400;
+$background-layer-5: colors.$grey-500;
