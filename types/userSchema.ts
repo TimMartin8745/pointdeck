@@ -4,7 +4,7 @@ import { z } from "zod";
 export const voterSchema = z.object({
   user_id: z.string(),
   name: z.string(),
-  vote: z.number().or(z.string()).nullable(),
+  vote: z.string().nullable(),
 });
 
 export type Voter = z.infer<typeof voterSchema>;

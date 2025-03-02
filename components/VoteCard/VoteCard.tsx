@@ -1,20 +1,36 @@
 import type React from "react";
+import clsx from "clsx";
+
+import type { ThemeOption } from "@/types";
 import styles from "./VoteCard.module.scss";
 
 interface VoteCardProps {
   value: number | string;
   onClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
+  selected: boolean;
+  theme: ThemeOption;
 }
 
-const VoteCard: React.FC<VoteCardProps> = ({ value, onClick, disabled }) => {
+const VoteCard = ({
+  value,
+  onClick,
+  disabled,
+  selected,
+  theme,
+}: VoteCardProps) => {
   return (
     <button
-      className={`${styles.card} ${disabled ? styles.disabled : ""}`}
+      className={clsx({
+        [styles.card]: true,
+        [`${styles.theme}-${theme}`]: true,
+        [styles.disabled]: disabled,
+        [styles.selected]: selected,
+      })}
       onClick={!disabled ? onClick : undefined}
       type={"button"}
     >
-      {value}
+      <h2>{value}</h2>
     </button>
   );
 };

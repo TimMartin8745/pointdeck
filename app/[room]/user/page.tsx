@@ -23,7 +23,7 @@ export default async function NewUser({
     redirect(`/new?room=${room}`);
   }
 
-  // Redirect if room data is not valid
+  // Error if room data is not valid
   const {
     data: roomData,
     error: zodError,
@@ -33,7 +33,7 @@ export default async function NewUser({
     console.error(zodError);
   }
 
-  const createNewRoom = async (formData: FormData) => {
+  const createNewUser = async (formData: FormData) => {
     "use server";
     let redirectPath: string | null = null;
 
@@ -70,7 +70,7 @@ export default async function NewUser({
       <h1>Enter your details</h1>
       <Suspense>
         <DynamicNewRoomForm
-          newUserAction={createNewRoom}
+          newUserAction={createNewUser}
           theme={roomData?.theme}
         />
       </Suspense>

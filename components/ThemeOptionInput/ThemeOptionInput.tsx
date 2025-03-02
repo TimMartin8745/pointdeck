@@ -1,19 +1,37 @@
 import type React from "react";
 import Icon from "@mdi/react";
 import { mdiHelp } from "@mdi/js";
-
-import styles from "./ThemeOption.module.scss";
 import clsx from "clsx";
+
+import type { ThemeOption } from "@/types";
+
+import styles from "./ThemeOptionInput.module.scss";
 
 interface ThemeOptionProps {
   name: string;
-  value: string;
-  defaultValue?: string;
+  value: ThemeOption;
+  defaultValue?: ThemeOption;
+  onClick?: () => void;
+  isRandom?: boolean;
 }
 
-const ThemeOption = ({ name, value, defaultValue }: ThemeOptionProps) => {
+const ThemeOptionInput = ({
+  name,
+  value,
+  defaultValue,
+  onClick,
+  isRandom,
+}: ThemeOptionProps) => {
   return (
-    <div className={clsx([styles.themeOption, `${styles.theme}-${value}`])}>
+    <div
+      className={clsx([
+        styles.themeOption,
+        `${styles.theme}-${isRandom ? "random" : value}`,
+      ])}
+      onMouseDown={onClick}
+      onTouchStart={onClick}
+      onKeyDown={(e) => e.key === "Enter" && onClick?.()}
+    >
       <input
         type="radio"
         id={value}
@@ -24,7 +42,7 @@ const ThemeOption = ({ name, value, defaultValue }: ThemeOptionProps) => {
       <label htmlFor={value} title={value}>
         <div className={styles.border}>
           <div className={styles.option}>
-            {value === "random" && (
+            {isRandom && (
               <Icon className={styles.icon} path={mdiHelp} size={0.85} />
             )}
           </div>
@@ -34,4 +52,4 @@ const ThemeOption = ({ name, value, defaultValue }: ThemeOptionProps) => {
   );
 };
 
-export default ThemeOption;
+export default ThemeOptionInput;

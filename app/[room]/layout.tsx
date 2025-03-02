@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
+import { roomSchema } from "@/types";
 
 import styles from "./Room.module.scss";
-import { roomSchema } from "@/types";
 
 export default async function PokerRoomLayout({
   children,
