@@ -26,7 +26,7 @@ const ThemeOptionInput = ({
     <div
       className={clsx([
         styles.themeOption,
-        `${styles.theme}-${isRandom ? "random" : value}`,
+        styles[`theme-${isRandom ? "random" : value}`],
       ])}
       onMouseDown={onClick}
       onTouchStart={onClick}

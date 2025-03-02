@@ -30,7 +30,7 @@ const Button = (props: ButtonProps) => {
       <Link
         className={clsx([
           styles.button,
-          `${styles.variant}-${props.variant ?? DEFAULT_THEME}`,
+          styles[`variant-${props.variant ?? DEFAULT_THEME}`],
         ])}
         href="/new"
       >
@@ -42,7 +42,7 @@ const Button = (props: ButtonProps) => {
     <button
       className={clsx([
         styles.button,
-        `${styles.variant}-${props.variant ?? DEFAULT_THEME}`,
+        styles[`variant-${props.variant ?? DEFAULT_THEME}`],
       ])}
       onMouseDown={props.onClick}
       onTouchStart={props.onClick}
