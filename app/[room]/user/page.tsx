@@ -57,7 +57,7 @@ export default async function NewUser({
 
       if (error) throw error;
 
-      redirectPath = `/${room}?userId=${validUserData.user_id}`;
+      redirectPath = `/${room}?userId=${validUserData.id}`;
     } catch (error) {
       console.error("Error adding user to room:", error);
     } finally {

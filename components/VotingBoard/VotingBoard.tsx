@@ -1,73 +1,55 @@
 "use client";
 
-import { useState } from "react";
-import type {
-  RealtimePostgresChangesFilter,
-  RealtimePostgresUpdatePayload,
-} from "@supabase/supabase-js";
-
-import { supabase } from "@/lib/supabase";
-import { voterSchema } from "@/types";
-import type { Room, ThemeOption, Voter } from "@/types";
+import { getRoom, getUser, vote } from "@/lib/api";
+import type { Room, User } from "@/types";
 import { getVotingSystem } from "@/utils";
 import VoteCard from "../VoteCard/VoteCard";
 
 import styles from "./VotingBoard.module.scss";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface VotingBoardProps {
-  room: string;
-  user: Voter;
-  votingSystem: string;
-  theme: ThemeOption;
-  onVote: (vote: number | string) => void;
+  roomId: string;
+  initialRoom: Room;
+  userId: string;
+  initialUser: User;
 }
 
 const VotingBoard = ({
-  room,
-  user,
-  votingSystem,
-  theme,
-  onVote,
+  roomId,
+  initialRoom,
+  userId,
+  initialUser,
 }: VotingBoardProps) => {
-  const system = getVotingSystem(votingSystem);
+  const { data: room } = useQuery<Room>({
+    queryKey: ["room", roomId],
+    queryFn: () => getRoom(roomId),
+    initialData: initialRoom,
+  });
 
-  const [voter, setVoter] = useState(user);
+  const votingSystem = getVotingSystem(room.voting_system);
 
-  // Listen for data updates
-  const databaseFilter: RealtimePostgresChangesFilter<"UPDATE"> = {
-    schema: "public",
-    table: "rooms",
-    filter: `id=eq.${room}`,
-    event: "UPDATE",
-  };
+  const { data: user } = useQuery<User>({
+    queryKey: ["user", userId],
+    queryFn: () => getUser(roomId),
+    initialData: initialUser,
+  });
 
-  supabase
-    .channel(`${room}-VotingBoard`)
-    .on(
-      "postgres_changes",
-      databaseFilter,
-      (payload: RealtimePostgresUpdatePayload<Room>) => {
-        const newUser = payload.new.votes.find(
-          ({ user_id }) => user_id === user.user_id
-        );
-        const newVoter = voterSchema.parse(newUser);
-        setVoter((cur) => {
-          if (JSON.stringify(newVoter) === JSON.stringify(cur)) return cur;
-          return newVoter;
-        });
-      }
-    )
-    .subscribe();
+  const voteMutation = useMutation({
+    mutationFn: (value: string) => vote(userId, value),
+  });
+
+  if (user.spectator) return null;
 
   return (
     <div className={styles.board}>
-      {system.map((value) => (
+      {votingSystem.map((value) => (
         <VoteCard
           key={value}
           value={value}
-          onClick={() => onVote(value)}
-          selected={voter.vote === value}
-          theme={theme}
+          onClick={() => voteMutation.mutate(value)}
+          selected={user.vote === value}
+          theme={room.theme}
         />
       ))}
     </div>

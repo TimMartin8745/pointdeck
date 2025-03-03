@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { userSchema } from "./userSchema";
 
 // VotingSystem
 export const votingSystems = ["fibonacci", "tshirts", "powers"] as const;
@@ -49,7 +48,6 @@ export const roomSchema = z.object({
   voting_system: votingSystemSchema.describe("text"),
   theme: themeOptionSchema.describe("text"),
   revealed: z.boolean().describe("bool"),
-  votes: z.array(userSchema).describe("jsonb[]"),
 });
 
 export type Room = z.infer<typeof roomSchema>;
@@ -62,7 +60,6 @@ export const roomPacketSchema = z.object({
   voting_system: votingSystemSchema.describe("text"),
   theme: themeOptionSchema.describe("text"),
   revealed: z.boolean().optional().describe("bool"),
-  votes: z.array(userSchema).optional().describe("jsonb[]"),
 });
 
-export type RoomPacket = z.infer<typeof roomSchema>;
+export type RoomPacket = z.infer<typeof roomPacketSchema>;

@@ -9,8 +9,8 @@ import styles from "./ThemeOptionInput.module.scss";
 
 interface ThemeOptionProps {
   name: string;
-  value: ThemeOption;
-  defaultValue?: ThemeOption;
+  value: ThemeOption | "random";
+  defaultValue?: ThemeOption | "random";
   onClick?: () => void;
   isRandom?: boolean;
 }

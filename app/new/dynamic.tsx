@@ -11,22 +11,26 @@ import Button from "@/components/Button/Button";
 import styles from "./NewRoom.module.scss";
 import ThemeOptionInput from "@/components/ThemeOptionInput/ThemeOptionInput";
 import { useState } from "react";
+import { getRandomTheme } from "@/utils";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/components/Providers";
 
 export default function DynamicNewRoomForm({
+  initialTheme,
   newRoomAction,
 }: {
-  newRoomAction: (formData: FormData) => void;
+  initialTheme: ThemeOption;
+  newRoomAction: (formData: FormData) => Promise<void>;
 }) {
-  const [theme, setTheme] = useState<ThemeOption | undefined>(undefined);
+  const [theme, setTheme] = useState<ThemeOption>(initialTheme);
 
-  const randomOptions = themeOptions.filter(
-    (option) => !option.includes("grey")
-  );
-  const randomIndex = Math.floor(Math.random() * randomOptions.length);
-  const random = randomOptions[randomIndex];
+  const newRoomMutation = useMutation({
+    mutationFn: newRoomAction,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["room"] }),
+  });
 
   return (
-    <form action={newRoomAction}>
+    <form action={newRoomMutation.mutate}>
       <div className={styles.field}>
         <label>
           Room Name
@@ -51,9 +55,8 @@ export default function DynamicNewRoomForm({
           <ThemeOptionInput
             key={"random"}
             name="theme"
-            value={random}
-            defaultValue={random}
-            onClick={() => setTheme(random)}
+            value={theme}
+            onClick={() => setTheme(getRandomTheme())}
             isRandom
           />
           {themeOptions
@@ -63,7 +66,7 @@ export default function DynamicNewRoomForm({
                 key={theme}
                 name="theme"
                 value={theme}
-                defaultValue={random}
+                defaultValue={initialTheme}
                 onClick={() => setTheme(theme)}
               />
             ))}

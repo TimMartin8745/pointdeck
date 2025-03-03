@@ -1,63 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import type {
-  RealtimePostgresChangesFilter,
-  RealtimePostgresUpdatePayload,
-} from "@supabase/supabase-js";
-
-import { supabase } from "@/lib/supabase";
-import type { Room, ThemeOption } from "@/types";
-import { roomSchema } from "@/types";
+import { getRoom, resetRoom, revealRoom } from "@/lib/api";
+import type { Room } from "@/types";
 import Button from "../Button";
 
 import styles from "./VoteControls.module.scss";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface VoteControlsProps {
-  room: string;
-  isRevealed: boolean;
-  theme?: ThemeOption;
-  onReset: () => void;
-  onReveal: () => void;
+  roomId: string;
+  initialRoom: Room;
 }
 
-const VoteControls = ({
-  room,
-  isRevealed,
-  theme,
-  onReset,
-  onReveal,
-}: VoteControlsProps) => {
-  const [revealed, setRevealed] = useState(isRevealed);
+const VoteControls = ({ roomId, initialRoom }: VoteControlsProps) => {
+  const { data: room } = useQuery<Room>({
+    queryKey: ["room", roomId],
+    queryFn: () => getRoom(roomId),
+    initialData: initialRoom,
+  });
 
-  // Listen for data updates
-  const databaseFilter: RealtimePostgresChangesFilter<"UPDATE"> = {
-    schema: "public",
-    table: "rooms",
-    filter: `id=eq.${room}`,
-    event: "UPDATE",
-  };
+  const resetMutation = useMutation({
+    mutationFn: () => resetRoom(roomId),
+  });
 
-  supabase
-    .channel(`${room}-VoteControls`)
-    .on(
-      "postgres_changes",
-      databaseFilter,
-      (payload: RealtimePostgresUpdatePayload<Room>) => {
-        const newRoom = roomSchema.parse(payload.new);
-
-        // revealed
-        setRevealed(newRoom.revealed);
-      }
-    )
-    .subscribe();
+  const revealMutation = useMutation({
+    mutationFn: () => revealRoom(roomId),
+  });
 
   return (
     <div className={styles.controls}>
-      {revealed ? (
-        <Button onClick={onReset} text="Reset Round" variant={theme} />
+      {room.revealed ? (
+        <Button
+          onClick={resetMutation.mutate}
+          text="Reset Round"
+          variant={room.theme}
+        />
       ) : (
-        <Button onClick={onReveal} text="Reveal Votes" variant={theme} />
+        <Button
+          onClick={revealMutation.mutate}
+          text="Reveal Votes"
+          variant={room.theme}
+        />
       )}
     </div>
   );
