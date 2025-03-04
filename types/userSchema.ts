@@ -10,3 +10,12 @@ export const userSchema = z.object({
 });
 
 export type User = z.infer<typeof userSchema>;
+
+// UserPacket
+export const userPacketSchema = z.object({
+  room_id: z.string(),
+  name: z.string(),
+  spectator: z.boolean(),
+});
+
+export type UserPacket = z.infer<typeof userPacketSchema>;

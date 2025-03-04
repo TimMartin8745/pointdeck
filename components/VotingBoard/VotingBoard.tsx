@@ -7,6 +7,7 @@ import VoteCard from "../VoteCard/VoteCard";
 
 import styles from "./VotingBoard.module.scss";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "../Providers";
 
 interface VotingBoardProps {
   roomId: string;
@@ -22,7 +23,7 @@ const VotingBoard = ({
   initialUser,
 }: VotingBoardProps) => {
   const { data: room } = useQuery<Room>({
-    queryKey: ["room", roomId],
+    queryKey: ["room"],
     queryFn: () => getRoom(roomId),
     initialData: initialRoom,
   });
@@ -30,13 +31,14 @@ const VotingBoard = ({
   const votingSystem = getVotingSystem(room.voting_system);
 
   const { data: user } = useQuery<User>({
-    queryKey: ["user", userId],
-    queryFn: () => getUser(roomId),
+    queryKey: ["user"],
+    queryFn: () => getUser(userId),
     initialData: initialUser,
   });
 
   const voteMutation = useMutation({
     mutationFn: (value: string) => vote(userId, value),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user"] }),
   });
 
   if (user.spectator) return null;

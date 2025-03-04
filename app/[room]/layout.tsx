@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getRoom } from "@/lib/api";
 
 import styles from "./Room.module.scss";
+import Channels from "@/components/Channels";
 
 export default async function PokerRoomLayout({
   children,
@@ -24,5 +25,11 @@ export default async function PokerRoomLayout({
     redirect(`/new?room=${roomId}`);
   }
 
-  return <div className={styles.container}>{children}</div>;
+  return (
+    <div className={styles.container}>
+      <Channels roomId={roomId}>
+        {children}
+      </Channels>
+    </div>
+  );
 }

@@ -33,13 +33,10 @@ export default async function NewRoom({
 
       const room = await createRoom(validRoomPacket);
 
-      console.log("room", room);
-
       redirectPath = `/${room.id}`;
     } catch (error) {
       console.error("Error creating room:", error);
     } finally {
-      console.log("redirectPath", redirectPath);
       if (redirectPath) redirect(redirectPath);
     }
   };

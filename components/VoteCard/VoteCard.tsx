@@ -23,12 +23,15 @@ const VoteCard = ({
     <button
       className={clsx({
         [styles.card]: true,
-        [styles[`theme-${theme}`]]: true,
+        [styles[`theme-${theme}`]]: Boolean(theme),
         [styles.disabled]: disabled,
         [styles.selected]: selected,
       })}
-      onClick={!disabled ? onClick : undefined}
+      onMouseDown={onClick}
+      onTouchStart={onClick}
+      onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       type={"button"}
+      disabled={disabled}
     >
       <h2>{value}</h2>
     </button>

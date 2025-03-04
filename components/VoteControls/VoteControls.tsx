@@ -6,6 +6,7 @@ import Button from "../Button";
 
 import styles from "./VoteControls.module.scss";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "../Providers";
 
 interface VoteControlsProps {
   roomId: string;
@@ -14,17 +15,22 @@ interface VoteControlsProps {
 
 const VoteControls = ({ roomId, initialRoom }: VoteControlsProps) => {
   const { data: room } = useQuery<Room>({
-    queryKey: ["room", roomId],
+    queryKey: ["room"],
     queryFn: () => getRoom(roomId),
     initialData: initialRoom,
   });
 
   const resetMutation = useMutation({
     mutationFn: () => resetRoom(roomId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["room"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
 
   const revealMutation = useMutation({
     mutationFn: () => revealRoom(roomId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["room"] }),
   });
 
   return (

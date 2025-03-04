@@ -17,13 +17,13 @@ interface VoteResultsProps {
 
 const VoteResults = ({ roomId, initialRoom }: VoteResultsProps) => {
   const { data: room } = useQuery<Room>({
-    queryKey: ["room", roomId],
+    queryKey: ["room"],
     queryFn: () => getRoom(roomId),
     initialData: initialRoom,
   });
 
   const { data: voters } = useQuery<User[]>({
-    queryKey: ["users", "voters"],
+    queryKey: ["user", "voter"],
     queryFn: () => getVoters(roomId),
   });
 
