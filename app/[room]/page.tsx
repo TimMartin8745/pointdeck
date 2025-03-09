@@ -20,14 +20,21 @@ export default async function PokerRoom({
   const roomId = (await params).room;
   const userId = (await searchParams).userId;
 
+  if (!roomId) redirect("/new");
+  if (!userId) redirect(`/${roomId}/user`);
+
   const room = await getRoom(roomId).catch((error) => {
     console.error(error);
     redirect(`/new?room=${roomId}`);
   });
 
-  const users = await getUsers(roomId).catch(() => {
-    redirect(`/${roomId}/user`);
+  const users = await getUsers(roomId).catch((error) => {
+    console.error(error);
+    redirect(`/new?room=${roomId}`);
   });
+
+  const user = users.find(({ id }) => id === userId);
+  if (!user) redirect(`/${roomId}/user`);
 
   const hasSpectators = users.findIndex(({ spectator }) => spectator) >= 0;
 

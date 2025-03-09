@@ -15,6 +15,8 @@ export default async function PokerRoomLayout({
 }>) {
   const roomId = (await params).room;
 
+  if (!roomId) redirect("/new");
+
   const room = await getRoom(roomId).catch((error) => {
     console.error(error);
     redirect(`/new?room=${roomId}`);
