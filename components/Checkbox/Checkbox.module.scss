@@ -1,32 +1,63 @@
 @use "sass:map";
 @use "@/theme/theme.module.scss" as theme;
 
-.button {
-  all: unset;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  user-select: none;
+.checkbox {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   cursor: pointer;
 
-  &.disabled {
-    cursor: unset;
-    pointer-events: none;
+  & span {
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    color: theme.$text-primary;
+    font-size: 16px;
+    user-select: none;
   }
-}
 
-@mixin variant($bg, $color, $hover) {
-  background: $bg;
-  color: $color;
+  & input {
+    display: none;
+  }
 
-  &.disabled,
+  // Unchecked icon remains with a neutral color
+  & .blank {
+    display: block;
+    height: 42px;
+    width: 42px;
+    color: theme.$text-secondary;
+    transition: color 0.2s ease;
+  }
+
+  // Default checked state uses the indigo variant
+  & .checked {
+    display: none;
+    height: 42px;
+    width: 42px;
+    color: theme.$indigo-400;
+    transition: color 0.2s ease;
+  }
+
+  // Default hover: change to indigo-300 for both icons
   &:hover {
-    background: $hover;
+    & .blank,
+    & .checked {
+      color: theme.$indigo-300;
+    }
+  }
+
+  & input:checked ~ .blank {
+    display: none;
+  }
+
+  & input:checked ~ .checked {
+    display: block;
   }
 }
 
+// Define a map of variants (using the same structure as your button)
 $variants: (
   "grey": (
     bg: theme.$grey-400,
@@ -125,17 +156,18 @@ $variants: (
   ),
 );
 
-.variant {
-  // Default variant (indigo)
-  background: theme.$indigo-400;
-
-  @each $name, $props in $variants {
-    &-#{$name} {
-      @include variant(
-        map.get($props, bg),
-        map.get($props, color),
-        map.get($props, hover)
-      );
+@each $name, $props in $variants {
+  .variant-#{$name} {
+    // Override the checked state color with the variant’s "bg" value.
+    & .checked {
+      color: map.get($props, bg);
+    }
+    // On hover, change both states to the variant’s "hover" value.
+    &:hover {
+      & .blank,
+      & .checked {
+        color: map.get($props, hover);
+      }
     }
   }
 }

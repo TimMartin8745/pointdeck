@@ -14,7 +14,6 @@ const Link: typeof NextLink = (({ children, ...props }) => {
       prefetch={true}
       onMouseDown={(e) => {
         const url = new URL(String(props.href), window.location.href);
-        console.log(url.origin, window.location.origin);
         if (
           url.origin === window.location.origin &&
           e.button === 0 &&

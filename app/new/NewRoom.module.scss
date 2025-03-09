@@ -1,8 +1,9 @@
 @use "@/theme/theme.module.scss" as theme;
 
 .container {
-  width: 316px;
-  margin: auto;
+  display: block;
+  max-width: 316px;
+  width: 100%;
   padding: 2rem;
   border: solid 2px theme.$divider-main;
   border-radius: 16px;

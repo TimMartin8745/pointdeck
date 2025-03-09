@@ -1,14 +1,14 @@
 import { Suspense } from "react";
+
+import { getRoom, getUsers } from "@/lib/api";
+import VoterList from "@/app/[room]/_components/VoterList/VoterList";
+import VotingBoard from "@/app/[room]/_components/VotingBoard/VotingBoard";
+
+import VoteControls from "@/app/[room]/_components/VoteControls/VoteControls";
+import VoteResults from "@/app/[room]/_components/VoteResults/VoteResults";
 import { redirect } from "next/navigation";
-
-import { supabase } from "@/lib/supabase";
-import { roomSchema, type Room } from "@/types";
-import VoterList from "@/components/VoterList/VoterList";
-import VotingBoard from "@/components/VotingBoard/VotingBoard";
-
-import VoteControls from "@/components/VoteControls/VoteControls";
-import SpectatorList from "@/components/SpectatorList/SpectatorList";
-import VoteResults from "@/components/VoteResults/VoteResults";
+import Channels from "@/components/Channels";
+import SpectatorList from "./_components/SpectatorList/SpectatorList";
 
 export default async function PokerRoom({
   params,
@@ -17,112 +17,61 @@ export default async function PokerRoom({
   params: Promise<{ room: string }>;
   searchParams: Promise<{ userId: string }>;
 }) {
-  // Get room data
-  const room = (await params).room;
-
-  const { data, error } = await supabase
-    .from("rooms")
-    .select("*")
-    .eq("id", room)
-    .single<Room>();
-
-  if (error || !data) {
-    console.error(error);
-    redirect(`/new?room=${room}`);
-  }
-
-  // Redirect if room data is not valid
-  const {
-    data: roomData,
-    error: zodError,
-    success,
-  } = roomSchema.safeParse(data);
-  if (!success) {
-    console.error(zodError);
-    redirect(`/new?room=${room}`);
-  }
-
+  const roomId = (await params).room;
   const userId = (await searchParams).userId;
 
-  const user = data.votes.find((user) => user.user_id === userId);
+  const room = await getRoom(roomId).catch((error) => {
+    console.error(error);
+    redirect(`/new?room=${roomId}`);
+  });
 
-  if (!user) {
-    redirect(`/${room}/user`);
-  }
+  const users = await getUsers(roomId).catch(() => {
+    redirect(`/${roomId}/user`);
+  });
 
-  // handle reveal votes
-  const revealVotes = async () => {
-    "use server";
-    const { data, error } = await supabase
-      .from("rooms")
-      .update({ revealed: true })
-      .eq("id", room)
-      .select()
-      .single();
-
-    if (error || !data) {
-      console.error("Unable to reveal votes. Please try again.", error);
-    }
-  };
-
-  // handle reset room
-  const resetRoom = async () => {
-    "use server";
-    const { error } = await supabase.rpc("reset_room_state", {
-      room_id: room,
-    });
-
-    if (error || !data) {
-      console.error("Unable to reset room state:", error);
-    }
-  };
-
-  // handle user vote
-  const updateVote = async (vote: string | number) => {
-    "use server";
-    const { error } = await supabase.rpc("update_user_vote", {
-      room_id: room,
-      user_id: userId,
-      new_vote: vote,
-    });
-
-    if (error) {
-      console.error("Error updating user vote:", error);
-    }
-  };
+  const hasSpectators = users.findIndex(({ spectator }) => spectator) >= 0;
 
   return (
-    <div>
-      <h1>{roomData.name}</h1>
-      <Suspense>
-        {"vote" in user && (
+    <Channels roomId={roomId}>
+      <div>
+        <h1>{room.name}</h1>
+        <Suspense>
           <VotingBoard
-            room={room}
-            user={user}
-            votingSystem={roomData.voting_system}
-            theme={roomData.theme}
-            onVote={updateVote}
+            roomId={roomId}
+            initialRoom={room}
+            userId={userId}
+            initialUsers={users}
           />
+        </Suspense>
+        <Suspense>
+          <VoteControls
+            roomId={room.id}
+            initialRoom={room}
+            initialUsers={users}
+          />
+        </Suspense>
+        <Suspense>
+          <VoteResults roomId={room.id} initialRoom={room} />
+        </Suspense>
+        <div>
+          <h2>Voters</h2>
+          <Suspense>
+            <VoterList
+              roomId={room.id}
+              initialRoom={room}
+              initialUsers={users}
+            />
+          </Suspense>
+        </div>
+        {hasSpectators && (
+          <div>
+            <h2>Spectators</h2>
+            <Suspense>
+              <SpectatorList roomId={room.id} initialUsers={users} />
+            </Suspense>
+          </div>
         )}
-      </Suspense>
-      <Suspense>
-        <VoteControls
-          room={room}
-          isRevealed={roomData.revealed}
-          theme={roomData.theme}
-          onReset={resetRoom}
-          onReveal={revealVotes}
-        />
-      </Suspense>
-      <Suspense>
-        <VoteResults roomData={roomData} />
-      </Suspense>
-      <Suspense>
-        <VoterList roomData={data} />
-      </Suspense>
-      <Suspense>
-        <SpectatorList roomData={data} />
-      </Suspense>
-    </div>
+      </div>
+    </Channels>
   );
 }

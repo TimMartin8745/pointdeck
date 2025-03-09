@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 
-import { supabase } from "@/lib/supabase";
-import { roomSchema } from "@/types";
+import { getRoom } from "@/lib/api";
 
 import styles from "./Room.module.scss";
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default async function PokerRoomLayout({
   children,
@@ -12,34 +13,17 @@ export default async function PokerRoomLayout({
   children: React.ReactNode;
   params: Promise<{ room: string }>;
 }>) {
-  const room = (await params).room;
+  const roomId = (await params).room;
 
-  const { data, error } = await supabase
-    .from("rooms")
-    .select("*")
-    .eq("id", room)
-    .single();
-
-  if (error || !data) {
+  const room = await getRoom(roomId).catch((error) => {
     console.error(error);
-    redirect(`/new?room=${room}`);
-  }
-
-  // Redirect if room data is not valid
-  const {
-    data: roomData,
-    error: zodError,
-    success,
-  } = roomSchema.safeParse(data);
-  if (!success) {
-    console.error(zodError);
-    redirect(`/new?room=${room}`);
-  }
+    redirect(`/new?room=${roomId}`);
+  });
 
   // Redirect if room is older than 1 day
-  const createdAt = new Date(roomData.created_at);
-  if (new Date().getTime() - createdAt.getTime() > 24 * 60 * 60 * 1000) {
-    redirect(`/new?room=${room}`);
+  const createdAt = new Date(room.created_at);
+  if (new Date().getTime() - createdAt.getTime() > ONE_DAY) {
+    redirect(`/new?room=${roomId}`);
   }
 
   return <div className={styles.container}>{children}</div>;

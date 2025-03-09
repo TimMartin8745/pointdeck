@@ -35,6 +35,7 @@
     "next-env.d.ts",
     "theme",
     "types",
+    "utils",
     ".next/types/**/*.ts"
   ],
   "exclude": [

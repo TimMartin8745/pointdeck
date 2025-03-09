@@ -1,0 +1,57 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.inputWrapper {
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-rows: min-content;
+  row-gap: 1px;
+}
+
+.header {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  color: theme.$text-secondary;
+}
+
+.title {
+  all: unset;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+  color: theme.$text-primary;
+}
+
+.input {
+  all: unset;
+  display: grid;
+  grid-template-columns: min-content auto min-content 0;
+  align-items: center;
+  background: theme.$background-layer-1;
+  border: 2px solid theme.$divider-main;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: theme.$text-secondary;
+  cursor: text;
+
+  &:hover,
+  &:focus {
+    color: theme.$text-primary;
+  }
+
+  &:hover {
+    border-color: theme.$background-layer-4;
+  }
+
+  &:focus {
+    border-color: theme.$grey-main;
+  }
+
+  &:disabled {
+    background: unset;
+  }
+}

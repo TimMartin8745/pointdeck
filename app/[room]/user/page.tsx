@@ -1,63 +1,41 @@
-import { Suspense } from "react";
-import styles from "./NewUser.module.scss";
-import DynamicNewRoomForm from "./dynamic";
-import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
-import { roomSchema, userSchema } from "@/types";
+
+import Button from "@/components/Button/Button";
+import { addUser, getRoom } from "@/lib/api";
+import { userPacketSchema } from "@/types";
+
+import styles from "./NewUser.module.scss";
+import Input from "@/components/Input/Input";
+import Checkbox from "@/components/Checkbox/Checkbox";
 
 export default async function NewUser({
   params,
 }: {
   params: Promise<{ room: string }>;
 }) {
-  const room = (await params).room;
+  const roomId = (await params).room;
 
-  const { data, error } = await supabase
-    .from("rooms")
-    .select("*")
-    .eq("id", room)
-    .single();
-
-  if (error || !data) {
+  const room = await getRoom(roomId).catch((error) => {
     console.error(error);
-    redirect(`/new?room=${room}`);
-  }
-
-  // Error if room data is not valid
-  const {
-    data: roomData,
-    error: zodError,
-    success,
-  } = roomSchema.safeParse(data);
-  if (!success) {
-    console.error(zodError);
-  }
+    redirect(`/new?room=${roomId}`);
+  });
 
   const createNewUser = async (formData: FormData) => {
     "use server";
     let redirectPath: string | null = null;
 
     try {
-      const userData = {
-        user_id: crypto.randomUUID(),
+      const newUser = {
+        room_id: roomId,
         name: formData.get("name"),
-        ...(formData.get("spectator")
-          ? {
-              spectator: true,
-            }
-          : { vote: null }),
+        spectator: Boolean(formData.get("spectator")),
       };
 
-      const validUserData = userSchema.parse(userData);
+      const validNewUser = userPacketSchema.parse(newUser);
 
-      const { error } = await supabase.rpc("add_user_to_room", {
-        room_id: room,
-        user_data: validUserData,
-      });
+      const user = await addUser(validNewUser);
 
-      if (error) throw error;
-
-      redirectPath = `/${room}?userId=${validUserData.user_id}`;
+      redirectPath = `/${roomId}?userId=${user.id}`;
     } catch (error) {
       console.error("Error adding user to room:", error);
     } finally {
@@ -68,12 +46,11 @@ export default async function NewUser({
   return (
     <div className={styles.container}>
       <h1>Enter your details</h1>
-      <Suspense>
-        <DynamicNewRoomForm
-          newUserAction={createNewUser}
-          theme={roomData?.theme}
-        />
-      </Suspense>
+      <form action={createNewUser}>
+        <Input name="name" title="Display Name" />
+        <Checkbox name="spectator" title="Spectator" variant={room.theme} />
+        <Button type="submit" text="Enter Room" variant={room.theme} />
+      </form>
     </div>
   );
 }

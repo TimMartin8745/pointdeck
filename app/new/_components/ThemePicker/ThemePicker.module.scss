@@ -1,0 +1,140 @@
+@use "sass:map";
+@use "@/theme/theme.module.scss" as theme;
+
+.themeOption {
+  display: inline-block;
+  height: max-content;
+  width: max-content;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  & label {
+    display: inline-block;
+    position: relative;
+    height: max-content;
+    width: max-content;
+    margin: 0 !important;
+    padding: 3px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: theme.$divider-main;
+    }
+
+    & .border {
+      height: max-content;
+      width: max-content;
+      border-radius: 9px;
+      padding: 3px;
+      background-color: theme.$background-layer-0;
+    }
+
+    & .option {
+      display: grid;
+      position: relative;
+      justify-items: center;
+      align-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+
+    & .icon {
+      position: absolute;
+      color: theme.$grey-400;
+    }
+  }
+}
+
+// Define a map of theme variants.
+// For most variants we use the same background for both the label when checked and the option.
+// For "random", we use separate values.
+$theme-variants: (
+  "random": (
+    label: theme.$grey-200,
+    option: theme.$grey-100,
+  ),
+  "grey": (
+    both: theme.$grey-400,
+  ),
+  "cool-grey": (
+    both: theme.$cool-grey-400,
+  ),
+  "warm-grey": (
+    both: theme.$warm-grey-400,
+  ),
+  "brown": (
+    both: theme.$brown-400,
+  ),
+  "red": (
+    both: theme.$red-400,
+  ),
+  "crimson": (
+    both: theme.$crimson-400,
+  ),
+  "orange": (
+    both: theme.$orange-400,
+  ),
+  "amber": (
+    both: theme.$amber-400,
+  ),
+  "yellow": (
+    both: theme.$yellow-400,
+  ),
+  "lime": (
+    both: theme.$lime-400,
+  ),
+  "light-green": (
+    both: theme.$light-green-400,
+  ),
+  "green": (
+    both: theme.$green-400,
+  ),
+  "teal": (
+    both: theme.$teal-400,
+  ),
+  "cyan": (
+    both: theme.$cyan-400,
+  ),
+  "light-blue": (
+    both: theme.$light-blue-400,
+  ),
+  "blue": (
+    both: theme.$blue-400,
+  ),
+  "indigo": (
+    both: theme.$indigo-400,
+  ),
+  "purple": (
+    both: theme.$purple-400,
+  ),
+  "pink": (
+    both: theme.$pink-400,
+  ),
+);
+
+.theme {
+  @each $name, $props in $theme-variants {
+    &-#{$name} {
+      @if map.has-key($props, "both") {
+        & input:checked + label,
+        & .option {
+          background-color: map.get($props, both);
+        }
+      } @else {
+        & input:checked + label {
+          background-color: map.get($props, label);
+        }
+        & .option {
+          background-color: map.get($props, option);
+        }
+      }
+    }
+  }
+}
