@@ -5,6 +5,7 @@ import { addUser, getRoom } from "@/lib/api";
 import { userPacketSchema } from "@/types";
 
 import styles from "./NewUser.module.scss";
+import Input from "@/components/Input/Input";
 
 export default async function NewUser({
   params,
@@ -46,10 +47,7 @@ export default async function NewUser({
       <h1>Enter your details</h1>
       <form action={createNewUser}>
         <div className={styles.field}>
-          <label>
-            Display Name
-            <input type="text" name="name" required />
-          </label>
+          <Input name="name" title="Display Name" />
         </div>
         <div className={styles.field}>
           <label>

@@ -2,12 +2,20 @@
 
 .body {
   display: grid;
-  grid-template-rows: auto max-content;
+  grid-template-rows: max-content auto max-content;
   background: theme.$background-layer-0;
   font-family: var(--font-rubik-sans);
   color: theme.$text-primary;
+
+  & main {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
 }
 
+.header,
 .footer {
   display: grid;
   grid-auto-flow: column;
@@ -29,4 +37,8 @@
       }
     }
   }
+}
+
+.header {
+  justify-content: end;
 }

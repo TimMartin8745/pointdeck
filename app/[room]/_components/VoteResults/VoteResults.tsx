@@ -6,7 +6,7 @@ import { getRoom, getUsers } from "@/lib/api";
 import type { Room, User } from "@/types";
 import { calculateAverage, calculateSpread } from "@/utils";
 
-import VoteSpread from "../VoteSpread/VoteSpread";
+import VoteSpread from "./VoteSpread/VoteSpread";
 
 import styles from "./VoteResults.module.scss";
 

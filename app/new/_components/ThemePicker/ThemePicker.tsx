@@ -9,9 +9,8 @@ import styles from "./ThemePicker.module.scss";
 
 interface ThemePickerProps {
   name: string;
-  value: ThemeOption | "random";
+  value?: ThemeOption | "random";
   defaultValue?: ThemeOption | "random";
-  onClick?: () => void;
   isRandom?: boolean;
 }
 
@@ -19,7 +18,6 @@ const ThemePicker = ({
   name,
   value,
   defaultValue,
-  onClick,
   isRandom,
 }: ThemePickerProps) => {
   return (
@@ -28,9 +26,6 @@ const ThemePicker = ({
         styles.themeOption,
         styles[`theme-${isRandom ? "random" : value}`],
       ])}
-      onMouseDown={onClick}
-      onTouchStart={onClick}
-      onKeyDown={(e) => e.key === "Enter" && onClick?.()}
     >
       <input
         type="radio"

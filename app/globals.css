@@ -1,8 +1,10 @@
-nextjs-portal {
+nextjs-portal,
+.tsqd-parent-container {
   position: absolute;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   padding: 0;

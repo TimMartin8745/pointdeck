@@ -3,7 +3,7 @@
 import { getRoom, getUsers, vote } from "@/lib/api";
 import type { Room, User } from "@/types";
 import { getVotingSystem } from "@/utils";
-import VoteCard from "../VoteCard/VoteCard";
+import VoteCard from "./VoteCard/VoteCard";
 
 import styles from "./VotingBoard.module.scss";
 import { useMutation, useQuery } from "@tanstack/react-query";

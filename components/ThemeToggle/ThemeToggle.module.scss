@@ -1,0 +1,13 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.toggle {
+  all: unset;
+  color: theme.$text-primary;
+  transition: all 0.2s ease;
+  opacity: 0.2;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

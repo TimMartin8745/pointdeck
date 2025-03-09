@@ -23,7 +23,7 @@ const VoteCard = ({
     <button
       className={clsx({
         [styles.card]: true,
-        [styles[`theme-${theme}`]]: Boolean(theme),
+        [styles[`theme-${theme}`]]: true,
         [styles.disabled]: disabled,
         [styles.selected]: selected,
       })}

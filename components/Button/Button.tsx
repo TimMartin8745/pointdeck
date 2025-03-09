@@ -11,6 +11,7 @@ import styles from "./Button.module.scss";
 interface BaseButton {
   text: string;
   variant?: ThemeOption;
+  disabled?: boolean;
 }
 
 interface LinkButton extends BaseButton {
@@ -28,10 +29,11 @@ const Button = (props: ButtonProps) => {
   if ("href" in props) {
     return (
       <Link
-        className={clsx([
-          styles.button,
-          styles[`variant-${props.variant ?? DEFAULT_THEME}`],
-        ])}
+        className={clsx({
+          [styles.button]: true,
+          [styles[`variant-${props.variant ?? DEFAULT_THEME}`]]: true,
+          [styles.disabled]: props.disabled,
+        })}
         href="/new"
       >
         {props.text}
@@ -40,10 +42,11 @@ const Button = (props: ButtonProps) => {
   }
   return (
     <button
-      className={clsx([
-        styles.button,
-        styles[`variant-${props.variant ?? DEFAULT_THEME}`],
-      ])}
+      className={clsx({
+        [styles.button]: true,
+        [styles[`variant-${props.variant ?? DEFAULT_THEME}`]]: true,
+        [styles.disabled]: props.disabled,
+      })}
       onMouseDown={props.onClick}
       onTouchStart={props.onClick}
       onKeyDown={(e) => e.key === "Enter" && props.onClick?.()}

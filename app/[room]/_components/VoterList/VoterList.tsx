@@ -20,29 +20,23 @@ const VoterList = ({ roomId, initialRoom, initialUsers }: VoterListProps) => {
     initialData: initialRoom,
   });
 
-  const { data: voters } = useQuery<User[]>({
+  const { data: users } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => getUsers(roomId),
     initialData: initialUsers,
   });
 
+  const voters = users.filter(({ spectator }) => !spectator);
+
   return (
     <ul className={styles.list}>
-      {voters?.map((voter) => (
-        <li key={voter.id}>
-          <span>{voter.name}</span>
-          {" - "}
-          <span>
-            {room.revealed
-              ? voter.vote !== null
-                ? voter.vote
-                : "No Vote"
-              : voter.vote !== null
-              ? "Voted"
-              : "Not Voted"}
-          </span>
-        </li>
-      ))}
+      {voters?.map((voter) => {
+        const vote = room.revealed
+          ? voter.vote ?? "No Vote"
+          : (voter.vote && "Voted") || "Not Voted";
+
+        return <li key={voter.id}>{`${voter.name} - ${vote}`}</li>;
+      })}
     </ul>
   );
 };

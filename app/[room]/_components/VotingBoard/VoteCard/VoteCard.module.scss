@@ -6,8 +6,10 @@
   justify-content: center;
   width: 60px;
   height: 90px;
-  border: 2px solid theme.$divider-main;
+  background: theme.$background-layer-1;
+  border: 2px solid theme.$text-secondary;
   border-radius: 6px;
+  color: theme.$text-primary;
   transition: transform 0.2s;
   cursor: pointer;
   user-select: none;

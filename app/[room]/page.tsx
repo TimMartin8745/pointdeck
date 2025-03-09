@@ -29,6 +29,8 @@ export default async function PokerRoom({
     redirect(`/${roomId}/user`);
   });
 
+  const hasSpectators = users.findIndex(({ spectator }) => spectator) >= 0;
+
   return (
     <Channels roomId={roomId}>
       <div>
@@ -42,7 +44,11 @@ export default async function PokerRoom({
           />
         </Suspense>
         <Suspense>
-          <VoteControls roomId={room.id} initialRoom={room} />
+          <VoteControls
+            roomId={room.id}
+            initialRoom={room}
+            initialUsers={users}
+          />
         </Suspense>
         <Suspense>
           <VoteResults roomId={room.id} initialRoom={room} />
@@ -57,12 +63,14 @@ export default async function PokerRoom({
             />
           </Suspense>
         </div>
-        <div>
-          <h2>Spectators</h2>
-          <Suspense>
-            <SpectatorList roomId={room.id} initialUsers={users} />
-          </Suspense>
-        </div>
+        {hasSpectators && (
+          <div>
+            <h2>Spectators</h2>
+            <Suspense>
+              <SpectatorList roomId={room.id} initialUsers={users} />
+            </Suspense>
+          </div>
+        )}
       </div>
     </Channels>
   );

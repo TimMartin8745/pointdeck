@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import Icon from "@mdi/react";
@@ -5,12 +6,12 @@ import { mdiGithub, mdiHeart } from "@mdi/js";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Link from "@/components/Link";
+import Providers from "@/components/Providers";
+import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
+import themeStyles from "@/theme/theme.module.scss";
 
 import "./globals.css";
 import styles from "./Layout.module.scss";
-import themeStyles from "@/theme/theme.module.scss";
-import clsx from "clsx";
-import Providers from "@/components/Providers";
 
 const STAGE: string | undefined = process.env.STAGE;
 
@@ -36,10 +37,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={themeStyles.theme} data-theme="default">
+    <html lang="en" className={themeStyles.theme} data-theme="light">
       <Providers>
         <body className={clsx([styles.body, rubik.variable])}>
-          {children}
+          <header className={styles.header}>
+            <ThemeToggle />
+          </header>
+          <main>{children}</main>
           <footer className={styles.footer}>
             <Link href="https://github.com/TimMartin8745/pointdeck">
               <Icon

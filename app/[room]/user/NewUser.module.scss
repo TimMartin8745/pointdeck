@@ -1,9 +1,16 @@
+@use "@/theme/theme.module.scss" as theme;
+
 .container {
-  max-width: 500px;
-  margin: 2rem auto;
+  display: block;
+  max-width: 316px;
+  width: 100%;
   padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: solid 2px theme.$divider-main;
+  border-radius: 16px;
+
+  & h1 {
+    margin-top: 0;
+  }
 
   & label {
     margin-bottom: 0.5rem;
@@ -19,4 +26,3 @@
     margin-bottom: 0.5rem;
   }
 }
-
