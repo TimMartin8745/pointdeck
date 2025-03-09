@@ -25,7 +25,7 @@ export default async function PokerRoom({
     redirect(`/new?room=${roomId}`);
   });
 
-  const users = await getUsers(userId).catch(() => {
+  const users = await getUsers(roomId).catch(() => {
     redirect(`/${roomId}/user`);
   });
 

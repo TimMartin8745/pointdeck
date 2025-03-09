@@ -1,0 +1,173 @@
+@use "sass:map";
+@use "@/theme/theme.module.scss" as theme;
+
+.checkbox {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+
+  & span {
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    color: theme.$text-primary;
+    font-size: 16px;
+    user-select: none;
+  }
+
+  & input {
+    display: none;
+  }
+
+  // Unchecked icon remains with a neutral color
+  & .blank {
+    display: block;
+    height: 42px;
+    width: 42px;
+    color: theme.$text-secondary;
+    transition: color 0.2s ease;
+  }
+
+  // Default checked state uses the indigo variant
+  & .checked {
+    display: none;
+    height: 42px;
+    width: 42px;
+    color: theme.$indigo-400;
+    transition: color 0.2s ease;
+  }
+
+  // Default hover: change to indigo-300 for both icons
+  &:hover {
+    & .blank,
+    & .checked {
+      color: theme.$indigo-300;
+    }
+  }
+
+  & input:checked ~ .blank {
+    display: none;
+  }
+
+  & input:checked ~ .checked {
+    display: block;
+  }
+}
+
+// Define a map of variants (using the same structure as your button)
+$variants: (
+  "grey": (
+    bg: theme.$grey-400,
+    color: theme.$grey-50,
+    hover: theme.$grey-300,
+  ),
+  "cool-grey": (
+    bg: theme.$cool-grey-400,
+    color: theme.$grey-50,
+    hover: theme.$cool-grey-300,
+  ),
+  "warm-grey": (
+    bg: theme.$warm-grey-400,
+    color: theme.$grey-50,
+    hover: theme.$warm-grey-300,
+  ),
+  "brown": (
+    bg: theme.$brown-400,
+    color: theme.$grey-50,
+    hover: theme.$brown-300,
+  ),
+  "red": (
+    bg: theme.$red-400,
+    color: theme.$grey-50,
+    hover: theme.$red-300,
+  ),
+  "crimson": (
+    bg: theme.$crimson-400,
+    color: theme.$grey-50,
+    hover: theme.$crimson-300,
+  ),
+  "orange": (
+    bg: theme.$orange-400,
+    color: theme.$grey-900,
+    hover: theme.$orange-300,
+  ),
+  "amber": (
+    bg: theme.$amber-400,
+    color: theme.$grey-900,
+    hover: theme.$amber-300,
+  ),
+  "yellow": (
+    bg: theme.$yellow-400,
+    color: theme.$grey-900,
+    hover: theme.$yellow-300,
+  ),
+  "lime": (
+    bg: theme.$lime-400,
+    color: theme.$grey-900,
+    hover: theme.$lime-300,
+  ),
+  "light-green": (
+    bg: theme.$light-green-400,
+    color: theme.$grey-900,
+    hover: theme.$light-green-300,
+  ),
+  "green": (
+    bg: theme.$green-400,
+    color: theme.$grey-50,
+    hover: theme.$green-300,
+  ),
+  "teal": (
+    bg: theme.$teal-400,
+    color: theme.$grey-900,
+    hover: theme.$teal-300,
+  ),
+  "cyan": (
+    bg: theme.$cyan-400,
+    color: theme.$grey-900,
+    hover: theme.$cyan-300,
+  ),
+  "light-blue": (
+    bg: theme.$light-blue-400,
+    color: theme.$grey-900,
+    hover: theme.$light-blue-300,
+  ),
+  "blue": (
+    bg: theme.$blue-400,
+    color: theme.$grey-50,
+    hover: theme.$blue-300,
+  ),
+  "indigo": (
+    bg: theme.$indigo-400,
+    color: theme.$grey-50,
+    hover: theme.$indigo-300,
+  ),
+  "purple": (
+    bg: theme.$purple-400,
+    color: theme.$grey-50,
+    hover: theme.$purple-300,
+  ),
+  "pink": (
+    bg: theme.$pink-400,
+    color: theme.$grey-50,
+    hover: theme.$pink-300,
+  ),
+);
+
+@each $name, $props in $variants {
+  .variant-#{$name} {
+    // Override the checked state color with the variant’s "bg" value.
+    & .checked {
+      color: map.get($props, bg);
+    }
+    // On hover, change both states to the variant’s "hover" value.
+    &:hover {
+      & .blank,
+      & .checked {
+        color: map.get($props, hover);
+      }
+    }
+  }
+}

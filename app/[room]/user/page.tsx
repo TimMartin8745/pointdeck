@@ -6,6 +6,7 @@ import { userPacketSchema } from "@/types";
 
 import styles from "./NewUser.module.scss";
 import Input from "@/components/Input/Input";
+import Checkbox from "@/components/Checkbox/Checkbox";
 
 export default async function NewUser({
   params,
@@ -46,15 +47,8 @@ export default async function NewUser({
     <div className={styles.container}>
       <h1>Enter your details</h1>
       <form action={createNewUser}>
-        <div className={styles.field}>
-          <Input name="name" title="Display Name" />
-        </div>
-        <div className={styles.field}>
-          <label>
-            Spectator
-            <input type="checkbox" name="spectator" />
-          </label>
-        </div>
+        <Input name="name" title="Display Name" />
+        <Checkbox name="spectator" title="Spectator" variant={room.theme} />
         <Button type="submit" text="Enter Room" variant={room.theme} />
       </form>
     </div>
