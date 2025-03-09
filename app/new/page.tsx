@@ -44,12 +44,11 @@ export default async function NewRoom({
   return (
     <div className={styles.container}>
       <h1>Create New Room</h1>
-      <Suspense>
-        <DynamicNewRoomForm
-          initialTheme={getRandomTheme()}
-          newRoomAction={createNewRoom}
-        />
-      </Suspense>
+      <form action={createNewRoom}>
+        <Suspense>
+          <DynamicNewRoomForm initialTheme={getRandomTheme()} />
+        </Suspense>
+      </form>
     </div>
   );
 }

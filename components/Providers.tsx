@@ -9,7 +9,7 @@ export const queryClient = new QueryClient();
 
 const Providers = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
-    setTheme(ThemeMode.Light);
+    setTheme(ThemeMode.Dark);
   }, []);
 
   return (

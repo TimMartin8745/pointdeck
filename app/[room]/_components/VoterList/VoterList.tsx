@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getRoom, getVoters } from "@/lib/api";
+import { getRoom, getUsers } from "@/lib/api";
 import type { Room, User } from "@/types";
 
 import styles from "./VoterList.module.scss";
@@ -10,9 +10,10 @@ import styles from "./VoterList.module.scss";
 interface VoterListProps {
   roomId: string;
   initialRoom: Room;
+  initialUsers: User[];
 }
 
-const VoterList = ({ roomId, initialRoom }: VoterListProps) => {
+const VoterList = ({ roomId, initialRoom, initialUsers }: VoterListProps) => {
   const { data: room } = useQuery<Room>({
     queryKey: ["room"],
     queryFn: () => getRoom(roomId),
@@ -20,8 +21,9 @@ const VoterList = ({ roomId, initialRoom }: VoterListProps) => {
   });
 
   const { data: voters } = useQuery<User[]>({
-    queryKey: ["user", "voter"],
-    queryFn: () => getVoters(roomId),
+    queryKey: ["users"],
+    queryFn: () => getUsers(roomId),
+    initialData: initialUsers,
   });
 
   return (

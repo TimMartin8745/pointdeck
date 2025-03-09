@@ -2,11 +2,11 @@
 
 import { getRoom, resetRoom, revealRoom } from "@/lib/api";
 import type { Room } from "@/types";
-import Button from "../Button";
+import Button from "@/components/Button/Button";
 
 import styles from "./VoteControls.module.scss";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../Providers";
+import { queryClient } from "@/components/Providers";
 
 interface VoteControlsProps {
   roomId: string;
@@ -24,7 +24,7 @@ const VoteControls = ({ roomId, initialRoom }: VoteControlsProps) => {
     mutationFn: () => resetRoom(roomId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["room"] });
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 

@@ -50,26 +50,11 @@ export async function resetRoom(_room_id: string) {
   }
 }
 
-export async function getVoters(roomId: string) {
+export async function getUsers(roomId: string) {
   const { data, error } = await supabase
     .from("users")
     .select<"*", User>("*")
-    .eq("room_id", roomId)
-    .eq("spectator", false);
-
-  if (error || !data) {
-    throw error;
-  }
-
-  return data;
-}
-
-export async function getUser(userId: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", userId)
-    .single<User>();
+    .eq("room_id", roomId);
 
   if (error || !data) {
     throw error;
@@ -104,9 +89,7 @@ export async function vote(userId: string, vote: string) {
   const { error } = await supabase
     .from("users")
     .update({ vote })
-    .eq("id", userId)
-    .select()
-    .single<User>();
+    .eq("id", userId);
 
   if (error) {
     throw error;

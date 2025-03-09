@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getRoom, getVoters } from "@/lib/api";
+import { getRoom, getUsers } from "@/lib/api";
 import type { Room, User } from "@/types";
 import { calculateAverage, calculateSpread } from "@/utils";
 
@@ -22,13 +22,15 @@ const VoteResults = ({ roomId, initialRoom }: VoteResultsProps) => {
     initialData: initialRoom,
   });
 
-  const { data: voters } = useQuery<User[]>({
-    queryKey: ["user", "voter"],
-    queryFn: () => getVoters(roomId),
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => getUsers(roomId),
   });
 
-  const spread = calculateSpread(voters ?? []);
-  const average = calculateAverage(room.voting_system, voters ?? []);
+  const voters = users?.filter(({ spectator }) => !spectator) ?? [];
+
+  const spread = calculateSpread(voters);
+  const average = calculateAverage(room.voting_system, voters);
 
   if (!room.revealed) return null;
 

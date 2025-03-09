@@ -9,33 +9,22 @@ import {
 import Button from "@/components/Button/Button";
 
 import styles from "./NewRoom.module.scss";
-import ThemeOptionInput from "@/components/ThemeOptionInput/ThemeOptionInput";
+import ThemeOptionInput from "@/app/new/_components/ThemePicker/ThemePicker";
 import { useState } from "react";
 import { getRandomTheme } from "@/utils";
-import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "@/components/Providers";
+import Input from "@/components/Input/Input";
 
 export default function DynamicNewRoomForm({
   initialTheme,
-  newRoomAction,
 }: {
   initialTheme: ThemeOption;
-  newRoomAction: (formData: FormData) => Promise<void>;
 }) {
   const [theme, setTheme] = useState<ThemeOption>(initialTheme);
 
-  const newRoomMutation = useMutation({
-    mutationFn: newRoomAction,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["room"] }),
-  });
-
   return (
-    <form action={newRoomMutation.mutate}>
+    <>
       <div className={styles.field}>
-        <label>
-          Room Name
-          <input type="text" name="roomName" required />
-        </label>
+        <Input name="roomName" title="Room Name" required />
       </div>
       <div className={styles.field}>
         <label>
@@ -73,6 +62,6 @@ export default function DynamicNewRoomForm({
         </fieldset>
       </div>
       <Button type="submit" text="Create Room" variant={theme} />
-    </form>
+    </>
   );
 }

@@ -1,9 +1,10 @@
-import { Suspense } from "react";
-import styles from "./NewUser.module.scss";
-import DynamicNewRoomForm from "./dynamic";
 import { redirect } from "next/navigation";
-import { userPacketSchema } from "@/types";
+
+import Button from "@/components/Button/Button";
 import { addUser, getRoom } from "@/lib/api";
+import { userPacketSchema } from "@/types";
+
+import styles from "./NewUser.module.scss";
 
 export default async function NewUser({
   params,
@@ -43,9 +44,21 @@ export default async function NewUser({
   return (
     <div className={styles.container}>
       <h1>Enter your details</h1>
-      <Suspense>
-        <DynamicNewRoomForm newUserAction={createNewUser} theme={room.theme} />
-      </Suspense>
+      <form action={createNewUser}>
+        <div className={styles.field}>
+          <label>
+            Display Name
+            <input type="text" name="name" required />
+          </label>
+        </div>
+        <div className={styles.field}>
+          <label>
+            Spectator
+            <input type="checkbox" name="spectator" />
+          </label>
+        </div>
+        <Button type="submit" text="Enter Room" variant={room.theme} />
+      </form>
     </div>
   );
 }

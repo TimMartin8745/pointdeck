@@ -5,9 +5,9 @@ import clsx from "clsx";
 
 import type { ThemeOption } from "@/types";
 
-import styles from "./ThemeOptionInput.module.scss";
+import styles from "./ThemePicker.module.scss";
 
-interface ThemeOptionProps {
+interface ThemePickerProps {
   name: string;
   value: ThemeOption | "random";
   defaultValue?: ThemeOption | "random";
@@ -15,13 +15,13 @@ interface ThemeOptionProps {
   isRandom?: boolean;
 }
 
-const ThemeOptionInput = ({
+const ThemePicker = ({
   name,
   value,
   defaultValue,
   onClick,
   isRandom,
-}: ThemeOptionProps) => {
+}: ThemePickerProps) => {
   return (
     <div
       className={clsx([
@@ -52,4 +52,4 @@ const ThemeOptionInput = ({
   );
 };
 
-export default ThemeOptionInput;
+export default ThemePicker;

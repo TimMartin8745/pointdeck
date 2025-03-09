@@ -1,0 +1,133 @@
+@use "@/theme/theme.module.scss" as theme;
+
+.inputWrapper {
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-rows: min-content;
+  row-gap: 1px;
+}
+
+.header {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  color: theme.$text-secondary;
+
+  & h4 {
+    all: unset;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+  }
+}
+
+.subtitleWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.requiredLabel {
+  color: theme.$text-secondary;
+}
+
+.errorText {
+  color: theme.$red-main;
+}
+
+.title {
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  color: theme.$text-primary;
+  font-size: 14px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.1px;
+  color: theme.$text-secondary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer {
+  color: theme.$red-main;
+  padding: 0 12px;
+  font-size: 12px;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.info {
+  color: theme.$text-secondary;
+}
+
+.error {
+  color: theme.$red-main;
+}
+
+.input {
+  all: unset;
+  display: grid;
+  grid-template-columns: min-content auto min-content 0;
+  align-items: center;
+  background: theme.$background-layer-1;
+  border: solid 2px theme.$divider-main;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: theme.$text-disabled;
+  cursor: text;
+
+  &:hover {
+    color: theme.$text-secondary;
+    border-color: theme.$background-layer-4;
+  }
+
+  &:focus {
+    color: theme.$text-primary;
+    border-color: theme.$grey-main;
+  }
+
+  &:disabled {
+    background: unset;
+  }
+
+  &.error {
+    border-color: theme.$red-main;
+  }
+}
+
+// .loadingInput {
+//   display: block;
+//   width: 100%;
+//   height: 41px;
+//   animation: loading 1s linear forwards infinite;
+//   background: theme.$background-layer-2;
+//   background: linear-gradient(
+//     to right,
+//     theme.$background-layer-3 8%,
+//     theme.$background-layer-1 38%,
+//     theme.$background-layer-3 54%
+//   );
+//   background-size: 1000px 640px;
+//   border-radius: 6px;
+// }
+
+// @keyframes loading {
+//   0% {
+//     background-position: -468px 0;
+//   }
+//   100% {
+//     background-position: 468px 0;
+//   }
+// }

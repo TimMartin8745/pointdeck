@@ -1,26 +1,26 @@
 "use client";
 
-import { getRoom, getUser, vote } from "@/lib/api";
+import { getRoom, getUsers, vote } from "@/lib/api";
 import type { Room, User } from "@/types";
 import { getVotingSystem } from "@/utils";
 import VoteCard from "../VoteCard/VoteCard";
 
 import styles from "./VotingBoard.module.scss";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../Providers";
+import { queryClient } from "../../../../components/Providers";
 
 interface VotingBoardProps {
   roomId: string;
   initialRoom: Room;
   userId: string;
-  initialUser: User;
+  initialUsers: User[];
 }
 
 const VotingBoard = ({
   roomId,
   initialRoom,
   userId,
-  initialUser,
+  initialUsers,
 }: VotingBoardProps) => {
   const { data: room } = useQuery<Room>({
     queryKey: ["room"],
@@ -30,18 +30,18 @@ const VotingBoard = ({
 
   const votingSystem = getVotingSystem(room.voting_system);
 
-  const { data: user } = useQuery<User>({
-    queryKey: ["user"],
-    queryFn: () => getUser(userId),
-    initialData: initialUser,
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => getUsers(roomId),
+    initialData: initialUsers,
   });
 
   const voteMutation = useMutation({
     mutationFn: (value: string) => vote(userId, value),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
   });
 
-  if (user.spectator) return null;
+  const user = users?.find(({ id }) => id === userId);
 
   return (
     <div className={styles.board}>
@@ -50,7 +50,7 @@ const VotingBoard = ({
           key={value}
           value={value}
           onClick={() => voteMutation.mutate(value)}
-          selected={user.vote === value}
+          selected={user?.vote === value}
           theme={room.theme}
         />
       ))}

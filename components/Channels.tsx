@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 
-import { deleteUser } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "./Providers";
 
@@ -14,9 +12,6 @@ const Channels = ({
   roomId: string;
   children: ReactNode;
 }) => {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
-
   supabase
     .channel(`${roomId}-room`)
     .on(
@@ -44,28 +39,10 @@ const Channels = ({
         filter: `room_id=eq.${roomId}`,
       },
       () => {
-        queryClient.invalidateQueries({ queryKey: ["user"] });
+        queryClient.invalidateQueries({ queryKey: ["users"] });
       }
     )
     .subscribe();
-
-  const presenceChannel = supabase.channel(`${roomId}-presence`, {
-    config: {
-      presence: {
-        key: userId ?? undefined,
-      },
-    },
-  });
-
-  presenceChannel
-    .on("presence", { event: "leave" }, async ({ key }) => {
-      console.log("leave", key);
-      if (!key) return;
-      await deleteUser(key);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-    })
-    .subscribe()
-    .track({});
 
   return <>{children}</>;
 };
