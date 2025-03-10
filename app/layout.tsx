@@ -12,6 +12,7 @@ import themeStyles from "@/theme/theme.module.scss";
 
 import "./globals.css";
 import styles from "./Layout.module.scss";
+import { Suspense } from "react";
 
 const STAGE: string | undefined = process.env.STAGE;
 
@@ -41,7 +42,9 @@ export default async function RootLayout({
       <Providers>
         <body className={clsx([styles.body, rubik.variable])}>
           <header className={styles.header}>
-            <ThemeToggle />
+            <Suspense>
+              <ThemeToggle />
+            </Suspense>
           </header>
           <main>{children}</main>
           <footer className={styles.footer}>
