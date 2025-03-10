@@ -1,6 +1,7 @@
 @use "@/theme/theme.module.scss" as theme;
 
 .container {
+  display: block;
   max-width: 316px;
   width: 100%;
   padding: 2rem;
@@ -12,6 +13,6 @@
   }
 
   & label {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 }
