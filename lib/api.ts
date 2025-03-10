@@ -1,5 +1,3 @@
-"use server";
-
 import type { Room, RoomPacket, User, UserPacket } from "@/types";
 import { supabase } from "./supabase";
 
