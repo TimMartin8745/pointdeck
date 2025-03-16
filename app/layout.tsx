@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import Icon from "@mdi/react";
 import { mdiGithub, mdiHeart } from "@mdi/js";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Link from "@/components/Link";
 import Providers from "@/components/Providers";
@@ -13,8 +12,7 @@ import themeStyles from "@/theme/theme.module.scss";
 import "./globals.css";
 import styles from "./Layout.module.scss";
 import { Suspense } from "react";
-
-const STAGE: string | undefined = process.env.STAGE;
+import DevTools from "@/components/DevTools";
 
 const rubik = Rubik({
   variable: "--font-rubik-sans",
@@ -62,7 +60,7 @@ export default async function RootLayout({
               <Icon path={mdiHeart} size={1.25} title={"Support me"} />
             </Link>
           </footer>
-          {STAGE === "dev" && <ReactQueryDevtools initialIsOpen={false} />}
+          {process.env.STAGE === "dev" && <DevTools />}
         </body>
       </Providers>
     </html>
