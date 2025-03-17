@@ -13,6 +13,7 @@ import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import ThemePicker from "./_components/ThemePicker/ThemePicker";
 import { getRandomTheme } from "@/utils";
+import Dropdown from "@/components/Dropdown/Dropdown";
 
 export default async function NewRoom({
   searchParams,
@@ -58,16 +59,12 @@ export default async function NewRoom({
         <Input name="roomName" title="Room Name" />
       </div>
       <div className={styles.field}>
-        <label>
-          Voting System
-          <select name="votingSystem">
-            {votingSystems.map((system) => (
-              <option key={system} value={system}>
-                {votingSystemMap[system]}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Dropdown
+          name="votingSystem"
+          title="Voting System"
+          options={votingSystems}
+          renderOption={(system) => votingSystemMap[system]}
+        />
       </div>
       <div className={styles.field}>
         <fieldset className={styles.theme}>

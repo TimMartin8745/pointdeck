@@ -1,20 +1,38 @@
+import type { ReactNode } from "react";
 import styles from "./Dropdown.module.scss";
+import { mdiUnfoldMoreHorizontal } from "@mdi/js";
+import Icon from "@mdi/react";
 
-export interface DropdownProps {
+export interface DropdownProps<T extends string | number> {
   name?: string;
-  required?: boolean;
   title?: string;
+  options: readonly T[];
+  renderOption: (option: T) => ReactNode;
 }
 
-export function Dropdown({ name, required = false, title }: DropdownProps) {
+export function Dropdown<T extends string | number>({
+  name,
+  title,
+  options,
+  renderOption,
+}: DropdownProps<T>) {
   return (
     <label className={styles.inputWrapper}>
-      {(name ?? required) && (
+      {title && (
         <div className={styles.header}>
-          {name && <span className={styles.title}>{title}</span>}
+          {title && <span className={styles.title}>{title}</span>}
         </div>
       )}
-      <input name={name} className={styles.input} />
+      <div className={styles.input}>
+        <select name={name} className={styles.select}>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {renderOption(option)}
+            </option>
+          ))}
+        </select>
+        <Icon path={mdiUnfoldMoreHorizontal} size={1} />
+      </div>
     </label>
   );
 }

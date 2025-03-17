@@ -78,15 +78,16 @@
 
 .input {
   all: unset;
+  position: relative;
   display: grid;
-  grid-template-columns: min-content auto min-content 0;
   align-items: center;
+  justify-content: right;
   background: theme.$background-layer-1;
   border: solid 2px theme.$divider-main;
   border-radius: 6px;
   padding: 8px 10px;
   color: theme.$text-secondary;
-  cursor: text;
+  cursor: pointer;
 
   &:hover {
     color: theme.$text-primary;
@@ -107,27 +108,20 @@
   }
 }
 
-// .loadingInput {
-//   display: block;
-//   width: 100%;
-//   height: 41px;
-//   animation: loading 1s linear forwards infinite;
-//   background: theme.$background-layer-2;
-//   background: linear-gradient(
-//     to right,
-//     theme.$background-layer-3 8%,
-//     theme.$background-layer-1 38%,
-//     theme.$background-layer-3 54%
-//   );
-//   background-size: 1000px 640px;
-//   border-radius: 6px;
-// }
+.select {
+  all: unset;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 6px;
 
-// @keyframes loading {
-//   0% {
-//     background-position: -468px 0;
-//   }
-//   100% {
-//     background-position: 468px 0;
-//   }
-// }
+  & option {
+    background: theme.$background-layer-0;
+    color: theme.$text-primary;
+  }
+}
