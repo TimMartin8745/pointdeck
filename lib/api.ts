@@ -2,11 +2,10 @@ import type { Room, RoomPacket, User, UserPacket } from "@/types";
 import { supabase } from "./supabase";
 
 export async function createRoom(room: RoomPacket) {
-  const { data, error } = await supabase
-    .from("rooms")
-    .upsert(room, { onConflict: "id" })
-    .select()
-    .single<Room>();
+  const { data, error } = await supabase.rpc<"create_room", Room>(
+    "create_room",
+    room
+  );
 
   if (error || !data) {
     throw error;
@@ -15,12 +14,10 @@ export async function createRoom(room: RoomPacket) {
   return data;
 }
 
-export async function getRoom(roomId: string) {
-  const { data, error } = await supabase
-    .from("rooms")
-    .select("*")
-    .eq("id", roomId)
-    .single<Room>();
+export async function getRoom(id: string) {
+  const { data, error } = await supabase.rpc<"get_room", Room>("get_room", {
+    id,
+  });
 
   if (error || !data) {
     throw error;
@@ -29,11 +26,10 @@ export async function getRoom(roomId: string) {
   return data;
 }
 
-export async function revealRoom(roomId: string) {
-  const { error } = await supabase
-    .from("rooms")
-    .update({ revealed: true })
-    .eq("id", roomId);
+export async function revealRoom(id: string) {
+  const { error } = await supabase.rpc("reveal_room", {
+    id,
+  });
 
   if (error) {
     throw error;
@@ -58,7 +54,35 @@ export async function getUsers(roomId: string) {
     throw error;
   }
 
-  return data;
+  return Object.fromEntries(data.map((user) => [user.id, user]));
+}
+
+export async function getVoters(roomId: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select<"*", User>("*")
+    .eq("room_id", roomId)
+    .eq("spectator", false);
+
+  if (error || !data) {
+    throw error;
+  }
+
+  return Object.fromEntries(data.map((voter) => [voter.id, voter]));
+}
+
+export async function getSpectators(roomId: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select<"*", User>("*")
+    .eq("room_id", roomId)
+    .eq("spectator", true);
+
+  if (error || !data) {
+    throw error;
+  }
+
+  return Object.fromEntries(data.map((spectator) => [spectator.id, spectator]));
 }
 
 export async function addUser(user: UserPacket) {
@@ -84,12 +108,16 @@ export async function deleteUser(userId: string) {
 }
 
 export async function vote(userId: string, vote: string) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("users")
     .update({ vote })
-    .eq("id", userId);
+    .eq("id", userId)
+    .select()
+    .single<User>();
 
-  if (error) {
+  if (error || !data) {
     throw error;
   }
+
+  return data;
 }

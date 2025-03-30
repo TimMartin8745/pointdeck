@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import type { PostgrestError } from "@supabase/supabase-js";
 
 import { createRoom } from "@/lib/api";
+import type { Room } from "@/types";
 import {
   roomPacketSchema,
   themeOptions,
@@ -12,7 +14,7 @@ import styles from "./NewRoom.module.scss";
 import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import ThemePicker from "./_components/ThemePicker/ThemePicker";
-import { getRandomTheme } from "@/utils";
+import { getRandomTheme, tryCatch } from "@/utils";
 import Dropdown from "@/components/Dropdown/Dropdown";
 
 export default async function NewRoom({
@@ -24,32 +26,32 @@ export default async function NewRoom({
 
   const createNewRoom = async (formData: FormData) => {
     "use server";
-    let redirectPath: string | null = null;
 
-    try {
-      let theme = formData.get("theme");
-      if (theme === "random") {
-        theme = getRandomTheme();
-      }
-
-      const roomPacket = {
-        ...(roomId ? { id: roomId, created_at: new Date().toISOString() } : {}),
-        name: formData.get("roomName"),
-        voting_system: formData.get("votingSystem"),
-        theme: theme,
-        revealed: false,
-      };
-
-      const validRoomPacket = roomPacketSchema.parse(roomPacket);
-
-      const room = await createRoom(validRoomPacket);
-
-      redirectPath = `/${room.id}`;
-    } catch (error) {
-      console.error("Error creating room:", error);
-    } finally {
-      if (redirectPath) redirect(redirectPath);
+    let theme = formData.get("theme");
+    if (theme === "random") {
+      theme = getRandomTheme();
     }
+
+    const roomPacket = {
+      ...(roomId ? { id: roomId, created_at: new Date().toISOString() } : {}),
+      name: formData.get("roomName"),
+      voting_system: formData.get("votingSystem"),
+      theme: theme,
+      revealed: false,
+    };
+
+    const validRoomPacket = roomPacketSchema.parse(roomPacket);
+
+    const room = await tryCatch<Room, PostgrestError>(
+      createRoom(validRoomPacket)
+    );
+
+    if (!room.success) {
+      console.error("Error creating room:", room.error);
+      return;
+    }
+
+    redirect(`/${room.value.id}`);
   };
 
   return (

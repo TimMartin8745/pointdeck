@@ -1,6 +1,6 @@
 "use client";
 
-import { getRoom, getUsers, vote } from "@/lib/api";
+import { getRoom, getVoters, vote } from "@/lib/api";
 import type { Room, User } from "@/types";
 import { getVotingSystem } from "@/utils";
 import VoteCard from "./VoteCard/VoteCard";
@@ -13,14 +13,14 @@ interface VotingBoardProps {
   roomId: string;
   initialRoom: Room;
   userId: string;
-  initialUsers: User[];
+  initialVoters: Record<string, User>;
 }
 
 const VotingBoard = ({
   roomId,
   initialRoom,
   userId,
-  initialUsers,
+  initialVoters,
 }: VotingBoardProps) => {
   const { data: room } = useQuery<Room>({
     queryKey: ["room"],
@@ -30,18 +30,21 @@ const VotingBoard = ({
 
   const votingSystem = getVotingSystem(room.voting_system);
 
-  const { data: users } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => getUsers(roomId),
-    initialData: initialUsers,
+  const { data: voters } = useQuery<Record<string, User>>({
+    queryKey: ["users", "voters"],
+    queryFn: () => getVoters(roomId),
+    initialData: initialVoters,
   });
 
   const voteMutation = useMutation({
     mutationFn: (value: string) => vote(userId, value),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onSuccess: (newData) => {
+      queryClient.setQueryData<Record<string, User>>(
+        ["users", "voters"],
+        (oldData) => oldData && { ...oldData, [newData.id]: newData }
+      );
+    },
   });
-
-  const user = users?.find(({ id }) => id === userId);
 
   return (
     <div className={styles.board}>
@@ -50,7 +53,7 @@ const VotingBoard = ({
           key={value}
           value={value}
           onClick={() => voteMutation.mutate(value)}
-          selected={user?.vote === value}
+          selected={voters[userId]?.vote === value}
           theme={room.theme}
         />
       ))}

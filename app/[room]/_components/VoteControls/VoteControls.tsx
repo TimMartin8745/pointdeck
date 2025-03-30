@@ -1,6 +1,6 @@
 "use client";
 
-import { getRoom, getUsers, resetRoom, revealRoom } from "@/lib/api";
+import { getRoom, getVoters, resetRoom, revealRoom } from "@/lib/api";
 import type { Room, User } from "@/types";
 import Button from "@/components/Button/Button";
 
@@ -11,13 +11,13 @@ import { queryClient } from "@/components/Providers";
 interface VoteControlsProps {
   roomId: string;
   initialRoom: Room;
-  initialUsers: User[];
+  initialVoters: Record<string, User>;
 }
 
 const VoteControls = ({
   roomId,
   initialRoom,
-  initialUsers,
+  initialVoters,
 }: VoteControlsProps) => {
   const { data: room } = useQuery<Room>({
     queryKey: ["room"],
@@ -25,25 +25,33 @@ const VoteControls = ({
     initialData: initialRoom,
   });
 
-  const { data: users } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => getUsers(roomId),
-    initialData: initialUsers,
+  const { data: users } = useQuery<Record<string, User>>({
+    queryKey: ["users", "voters"],
+    queryFn: () => getVoters(roomId),
+    initialData: initialVoters,
   });
 
-  const noVotes = users.every(({ vote }) => vote === null);
+  const noVotes = Object.values(users).every(({ vote }) => vote === null);
 
   const resetMutation = useMutation({
     mutationFn: () => resetRoom(roomId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["room"] });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users", "voters"] });
     },
   });
 
   const revealMutation = useMutation({
     mutationFn: () => revealRoom(roomId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["room"] }),
+    onSuccess: () =>
+      queryClient.setQueryData<Room>(
+        ["room"],
+        (oldData) =>
+          oldData && {
+            ...oldData,
+            revealed: true,
+          }
+      ),
   });
 
   return (

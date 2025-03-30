@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "./Providers";
+import type { Room, User } from "@/types";
+import { roomSchema, userSchema } from "@/types";
 
 const Channels = ({
   roomId,
@@ -22,8 +24,15 @@ const Channels = ({
         table: "rooms",
         filter: `id=eq.${roomId}`,
       },
-      () => {
-        queryClient.invalidateQueries({ queryKey: ["room"] });
+      (message) => {
+        const { data, error } = roomSchema.safeParse(message.new);
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        queryClient.setQueryData<Room>(["room"], () => data);
       }
     )
     .subscribe();
@@ -38,8 +47,22 @@ const Channels = ({
         table: "users",
         filter: `room_id=eq.${roomId}`,
       },
-      () => {
-        queryClient.invalidateQueries({ queryKey: ["users"] });
+      (message) => {
+        const { data, error } = userSchema.safeParse(message.new);
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        queryClient.setQueryData<Record<string, User>>(
+          ["users", data.spectator ? "spectators" : "voters"],
+          (oldData) =>
+            oldData && {
+              ...oldData,
+              [data.id]: data,
+            }
+        );
       }
     )
     .subscribe();

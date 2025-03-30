@@ -2,28 +2,26 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getUsers } from "@/lib/api";
+import { getSpectators } from "@/lib/api";
 import type { User } from "@/types";
 
 import styles from "./SpectatorList.module.scss";
 
 interface SpectatorListProps {
   roomId: string;
-  initialUsers: User[];
+  initialSpectators: Record<string, User>;
 }
 
-const SpectatorList = ({ roomId, initialUsers }: SpectatorListProps) => {
-  const { data: users } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => getUsers(roomId),
-    initialData: initialUsers,
+const SpectatorList = ({ roomId, initialSpectators }: SpectatorListProps) => {
+  const { data: spectators } = useQuery<Record<string, User>>({
+    queryKey: ["users", "spectators"],
+    queryFn: () => getSpectators(roomId),
+    initialData: initialSpectators,
   });
-
-  const spectators = users.filter(({ spectator }) => spectator);
 
   return (
     <ul className={styles.list}>
-      {spectators.map((spectator) => (
+      {Object.values(spectators).map((spectator) => (
         <li key={spectator.id}>
           <span>{spectator.name}</span>
         </li>

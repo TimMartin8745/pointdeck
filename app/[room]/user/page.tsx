@@ -7,6 +7,7 @@ import { userPacketSchema } from "@/types";
 import styles from "./NewUser.module.scss";
 import Input from "@/components/Input/Input";
 import Checkbox from "@/components/Checkbox/Checkbox";
+import { tryCatch } from "@/utils";
 
 export default async function NewUser({
   params,
@@ -15,10 +16,12 @@ export default async function NewUser({
 }) {
   const roomId = (await params).room;
 
-  const room = await getRoom(roomId).catch((error) => {
-    console.error(error);
+  const room = await tryCatch(getRoom(roomId));
+
+  if (!room.success) {
+    console.error(room.error);
     redirect(`/new?room=${roomId}`);
-  });
+  }
 
   const createNewUser = async (formData: FormData) => {
     "use server";
@@ -48,8 +51,12 @@ export default async function NewUser({
       <h1>Enter your details</h1>
       <form action={createNewUser}>
         <Input name="name" title="Display Name" />
-        <Checkbox name="spectator" title="Spectator" variant={room.theme} />
-        <Button type="submit" text="Enter Room" variant={room.theme} />
+        <Checkbox
+          name="spectator"
+          title="Spectator"
+          variant={room.value.theme}
+        />
+        <Button type="submit" text="Enter Room" variant={room.value.theme} />
       </form>
     </div>
   );

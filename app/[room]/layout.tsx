@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getRoom } from "@/lib/api";
 
 import styles from "./Room.module.scss";
+import { tryCatch } from "@/utils";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -17,13 +18,15 @@ export default async function PokerRoomLayout({
 
   if (!roomId) redirect("/new");
 
-  const room = await getRoom(roomId).catch((error) => {
-    console.error(error);
+  const room = await tryCatch(getRoom(roomId));
+
+  if (!room.success) {
+    console.error(room.error);
     redirect(`/new?room=${roomId}`);
-  });
+  }
 
   // Redirect if room is older than 1 day
-  const createdAt = new Date(room.created_at);
+  const createdAt = new Date(room.value.created_at);
   if (new Date().getTime() - createdAt.getTime() > ONE_DAY) {
     redirect(`/new?room=${roomId}`);
   }

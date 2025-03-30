@@ -9,6 +9,8 @@ import VoteResults from "@/app/[room]/_components/VoteResults/VoteResults";
 import { redirect } from "next/navigation";
 import Channels from "@/components/Channels";
 import SpectatorList from "./_components/SpectatorList/SpectatorList";
+import type { User } from "@/types";
+import { tryCatch } from "@/utils";
 
 export default async function PokerRoom({
   params,
@@ -23,58 +25,74 @@ export default async function PokerRoom({
   if (!roomId) redirect("/new");
   if (!userId) redirect(`/${roomId}/user`);
 
-  const room = await getRoom(roomId).catch((error) => {
-    console.error(error);
-    redirect(`/new?room=${roomId}`);
-  });
+  const room = await tryCatch(getRoom(roomId));
 
-  const users = await getUsers(roomId).catch((error) => {
-    console.error(error);
+  if (!room.success) {
+    console.error(room.error);
     redirect(`/new?room=${roomId}`);
-  });
+  }
 
-  const user = users.find(({ id }) => id === userId);
+  const users = await tryCatch(getUsers(roomId));
+
+  if (!users.success) {
+    console.error(users.error);
+    redirect(`/new?room=${roomId}`);
+  }
+
+  const user = users.value[userId];
   if (!user) redirect(`/${roomId}/user`);
 
-  const hasSpectators = users.findIndex(({ spectator }) => spectator) >= 0;
+  const voters: Record<string, User> = {};
+  const spectators: Record<string, User> = {};
+  for (const [userId, user] of Object.entries(users.value)) {
+    if (user.spectator) {
+      spectators[userId] = user;
+      continue;
+    }
+    voters[userId] = user;
+  }
 
   return (
     <Channels roomId={roomId}>
       <div>
-        <h1>{room.name}</h1>
+        <h1>{room.value.name}</h1>
         <Suspense>
           <VotingBoard
             roomId={roomId}
-            initialRoom={room}
+            initialRoom={room.value}
             userId={userId}
-            initialUsers={users}
+            initialVoters={voters}
           />
         </Suspense>
         <Suspense>
           <VoteControls
-            roomId={room.id}
-            initialRoom={room}
-            initialUsers={users}
+            roomId={roomId}
+            initialRoom={room.value}
+            initialVoters={voters}
           />
         </Suspense>
         <Suspense>
-          <VoteResults roomId={room.id} initialRoom={room} />
+          <VoteResults
+            roomId={roomId}
+            initialRoom={room.value}
+            initialVoters={voters}
+          />
         </Suspense>
         <div>
           <h2>Voters</h2>
           <Suspense>
             <VoterList
-              roomId={room.id}
-              initialRoom={room}
-              initialUsers={users}
+              roomId={roomId}
+              initialRoom={room.value}
+              initialVoters={voters}
             />
           </Suspense>
         </div>
-        {hasSpectators && (
+        {Object.keys(spectators).length > 0 && (
           <div>
             <h2>Spectators</h2>
             <Suspense>
-              <SpectatorList roomId={room.id} initialUsers={users} />
+              <SpectatorList roomId={roomId} initialSpectators={spectators} />
             </Suspense>
           </div>
         )}
