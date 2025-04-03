@@ -11,7 +11,7 @@ import { queryClient } from "@/components/Providers";
 interface VoteControlsProps {
   roomId: string;
   initialRoom: Room;
-  initialVoters: Record<string, User>;
+  initialVoters: User[];
 }
 
 const VoteControls = ({
@@ -25,13 +25,13 @@ const VoteControls = ({
     initialData: initialRoom,
   });
 
-  const { data: users } = useQuery<Record<string, User>>({
+  const { data: users } = useQuery<User[]>({
     queryKey: ["users", "voters"],
     queryFn: () => getVoters(roomId),
     initialData: initialVoters,
   });
 
-  const noVotes = Object.values(users).every(({ vote }) => vote === null);
+  const noVotes = users.every(({ vote }) => vote === null);
 
   const resetMutation = useMutation({
     mutationFn: () => resetRoom(roomId),

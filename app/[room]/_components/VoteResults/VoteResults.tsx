@@ -13,7 +13,7 @@ import styles from "./VoteResults.module.scss";
 interface VoteResultsProps {
   roomId: string;
   initialRoom: Room;
-  initialVoters: Record<string, User>;
+  initialVoters: User[];
 }
 
 const VoteResults = ({
@@ -27,13 +27,11 @@ const VoteResults = ({
     initialData: initialRoom,
   });
 
-  const { data: voterData } = useQuery<Record<string, User>>({
+  const { data: voters } = useQuery<User[]>({
     queryKey: ["users", "voters"],
     queryFn: () => getVoters(roomId),
     initialData: initialVoters,
   });
-
-  const voters = Object.values(voterData);
 
   const spread = calculateSpread(voters);
   const average = calculateAverage(room.voting_system, voters);

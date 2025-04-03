@@ -1,21 +1,31 @@
-import type { Room, RoomPacket, User, UserPacket } from "@/types";
+import type { Room, RoomPacket, UserPacket } from "@/types";
+import { roomSchema, userSchema } from "@/types";
 import { supabase } from "./supabase";
+import { z } from "zod";
 
 export async function createRoom(room: RoomPacket) {
-  const { data, error } = await supabase.rpc<"create_room", Room>(
-    "create_room",
-    room
-  );
+  const { data, error } = await supabase.rpc("create_room", room);
 
   if (error || !data) {
     throw error;
   }
 
-  return data;
+  console.log(data);
+
+  const roomData: Room = {
+    id: data[0].room_id,
+    created_at: data[0].room_created_at,
+    name: data[0].room_name,
+    voting_system: data[0].room_voting_system,
+    theme: data[0].room_theme,
+    revealed: data[0].room_revealed,
+  };
+
+  return roomSchema.parse(roomData);
 }
 
 export async function getRoom(id: string) {
-  const { data, error } = await supabase.rpc<"get_room", Room>("get_room", {
+  const { data, error } = await supabase.rpc("get_room", {
     id,
   });
 
@@ -23,7 +33,7 @@ export async function getRoom(id: string) {
     throw error;
   }
 
-  return data;
+  return roomSchema.parse(data);
 }
 
 export async function revealRoom(id: string) {
@@ -36,88 +46,74 @@ export async function revealRoom(id: string) {
   }
 }
 
-export async function resetRoom(_room_id: string) {
-  const { error } = await supabase.rpc("reset_room_state", { _room_id });
+export async function resetRoom(id: string) {
+  const { error } = await supabase.rpc("reset_room", { id });
 
   if (error) {
     throw error;
   }
 }
 
-export async function getUsers(roomId: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select<"*", User>("*")
-    .eq("room_id", roomId);
+export async function getUsers(room_id: string) {
+  const { data, error } = await supabase.rpc("get_users", {
+    room_id,
+  });
 
   if (error || !data) {
     throw error;
   }
 
-  return Object.fromEntries(data.map((user) => [user.id, user]));
+  return z.array(userSchema).parse(data);
 }
 
-export async function getVoters(roomId: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select<"*", User>("*")
-    .eq("room_id", roomId)
-    .eq("spectator", false);
+export async function getVoters(room_id: string) {
+  const { data, error } = await supabase.rpc("get_voters", {
+    room_id,
+  });
 
   if (error || !data) {
     throw error;
   }
 
-  return Object.fromEntries(data.map((voter) => [voter.id, voter]));
+  return z.array(userSchema).parse(data);
 }
 
-export async function getSpectators(roomId: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select<"*", User>("*")
-    .eq("room_id", roomId)
-    .eq("spectator", true);
+export async function getSpectators(room_id: string) {
+  const { data, error } = await supabase.rpc("get_spectators", {
+    room_id,
+  });
 
   if (error || !data) {
     throw error;
   }
 
-  return Object.fromEntries(data.map((spectator) => [spectator.id, spectator]));
+  return z.array(userSchema).parse(data);
 }
 
-export async function addUser(user: UserPacket) {
-  const { data, error } = await supabase
-    .from("users")
-    .upsert(user, { onConflict: "id" })
-    .select()
-    .single<User>();
+export async function addUser(userPacket: UserPacket) {
+  const { data, error } = await supabase.rpc("add_user", userPacket);
 
   if (error || !data) {
     throw error;
   }
 
-  return data;
+  return userSchema.parse(data);
 }
 
-export async function deleteUser(userId: string) {
-  const { error } = await supabase.from("users").delete().eq("id", userId);
+export async function deleteUser(id: string) {
+  const { error } = await supabase.rpc("delete_user", { id });
 
   if (error) {
     throw error;
   }
 }
 
-export async function vote(userId: string, vote: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .update({ vote })
-    .eq("id", userId)
-    .select()
-    .single<User>();
+export async function vote(id: string, vote: string) {
+  const { data, error } = await supabase.rpc("vote", { id, vote });
 
   if (error || !data) {
     throw error;
   }
 
-  return data;
+  return userSchema.parse(data);
 }

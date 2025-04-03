@@ -2,7 +2,7 @@
 
 import { getRoom, getVoters, vote } from "@/lib/api";
 import type { Room, User } from "@/types";
-import { getVotingSystem } from "@/utils";
+import { getVotingSystem, updateCache } from "@/utils";
 import VoteCard from "./VoteCard/VoteCard";
 
 import styles from "./VotingBoard.module.scss";
@@ -13,7 +13,7 @@ interface VotingBoardProps {
   roomId: string;
   initialRoom: Room;
   userId: string;
-  initialVoters: Record<string, User>;
+  initialVoters: User[];
 }
 
 const VotingBoard = ({
@@ -30,7 +30,7 @@ const VotingBoard = ({
 
   const votingSystem = getVotingSystem(room.voting_system);
 
-  const { data: voters } = useQuery<Record<string, User>>({
+  const { data: voters } = useQuery<User[]>({
     queryKey: ["users", "voters"],
     queryFn: () => getVoters(roomId),
     initialData: initialVoters,
@@ -39,12 +39,13 @@ const VotingBoard = ({
   const voteMutation = useMutation({
     mutationFn: (value: string) => vote(userId, value),
     onSuccess: (newData) => {
-      queryClient.setQueryData<Record<string, User>>(
-        ["users", "voters"],
-        (oldData) => oldData && { ...oldData, [newData.id]: newData }
+      queryClient.setQueryData<User[]>(["users", "voters"], (oldData) =>
+        updateCache(oldData, newData, "id")
       );
     },
   });
+
+  const voter = voters.find(({ id }) => id === userId);
 
   return (
     <div className={styles.board}>
@@ -53,7 +54,7 @@ const VotingBoard = ({
           key={value}
           value={value}
           onClick={() => voteMutation.mutate(value)}
-          selected={voters[userId]?.vote === value}
+          selected={voter?.vote === value}
           theme={room.theme}
         />
       ))}

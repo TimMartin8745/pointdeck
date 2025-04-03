@@ -9,11 +9,11 @@ import styles from "./SpectatorList.module.scss";
 
 interface SpectatorListProps {
   roomId: string;
-  initialSpectators: Record<string, User>;
+  initialSpectators: User[];
 }
 
 const SpectatorList = ({ roomId, initialSpectators }: SpectatorListProps) => {
-  const { data: spectators } = useQuery<Record<string, User>>({
+  const { data: spectators } = useQuery<User[]>({
     queryKey: ["users", "spectators"],
     queryFn: () => getSpectators(roomId),
     initialData: initialSpectators,
@@ -21,7 +21,7 @@ const SpectatorList = ({ roomId, initialSpectators }: SpectatorListProps) => {
 
   return (
     <ul className={styles.list}>
-      {Object.values(spectators).map((spectator) => (
+      {spectators.map((spectator) => (
         <li key={spectator.id}>
           <span>{spectator.name}</span>
         </li>

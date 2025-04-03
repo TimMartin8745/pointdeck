@@ -39,17 +39,17 @@ export default async function PokerRoom({
     redirect(`/new?room=${roomId}`);
   }
 
-  const user = users.value[userId];
+  const user = users.value.find(({ id }) => id === userId);
   if (!user) redirect(`/${roomId}/user`);
 
-  const voters: Record<string, User> = {};
-  const spectators: Record<string, User> = {};
-  for (const [userId, user] of Object.entries(users.value)) {
+  const voters: User[] = [];
+  const spectators: User[] = [];
+  for (const user of users.value) {
     if (user.spectator) {
-      spectators[userId] = user;
+      spectators.push(user);
       continue;
     }
-    voters[userId] = user;
+    voters.push(user);
   }
 
   return (
@@ -88,7 +88,7 @@ export default async function PokerRoom({
             />
           </Suspense>
         </div>
-        {Object.keys(spectators).length > 0 && (
+        {spectators.length > 0 && (
           <div>
             <h2>Spectators</h2>
             <Suspense>

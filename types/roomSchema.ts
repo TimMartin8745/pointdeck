@@ -54,12 +54,12 @@ export type Room = z.infer<typeof roomSchema>;
 
 // RoomPacket
 export const roomPacketSchema = z.object({
-  id: z.string().uuid().optional().describe("uuid"),
-  created_at: z.string().optional().describe("timestamptz"),
-  name: z.string().describe("text"),
-  voting_system: votingSystemSchema.describe("text"),
-  theme: themeOptionSchema.describe("text"),
-  revealed: z.boolean().optional().describe("bool"),
+  _id: z.string().uuid().optional().describe("uuid"),
+  _created_at: z.string().optional().describe("timestamptz"),
+  _name: z.string().describe("text"),
+  _voting_system: votingSystemSchema.describe("text"),
+  _theme: themeOptionSchema.describe("text"),
+  _revealed: z.boolean().describe("bool"),
 });
 
 export type RoomPacket = z.infer<typeof roomPacketSchema>;

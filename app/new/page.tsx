@@ -33,11 +33,11 @@ export default async function NewRoom({
     }
 
     const roomPacket = {
-      ...(roomId ? { id: roomId, created_at: new Date().toISOString() } : {}),
-      name: formData.get("roomName"),
-      voting_system: formData.get("votingSystem"),
-      theme: theme,
-      revealed: false,
+      ...(roomId ? { _id: roomId, _created_at: new Date().toISOString() } : {}),
+      _name: formData.get("roomName"),
+      _voting_system: formData.get("votingSystem"),
+      _theme: theme,
+      _revealed: false,
     };
 
     const validRoomPacket = roomPacketSchema.parse(roomPacket);

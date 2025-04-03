@@ -10,7 +10,7 @@ import styles from "./VoterList.module.scss";
 interface VoterListProps {
   roomId: string;
   initialRoom: Room;
-  initialVoters: Record<string, User>;
+  initialVoters: User[];
 }
 
 const VoterList = ({ roomId, initialRoom, initialVoters }: VoterListProps) => {
@@ -20,7 +20,7 @@ const VoterList = ({ roomId, initialRoom, initialVoters }: VoterListProps) => {
     initialData: initialRoom,
   });
 
-  const { data: voters } = useQuery<Record<string, User>>({
+  const { data: voters } = useQuery<User[]>({
     queryKey: ["users", "voters"],
     queryFn: () => getVoters(roomId),
     initialData: initialVoters,
@@ -28,7 +28,7 @@ const VoterList = ({ roomId, initialRoom, initialVoters }: VoterListProps) => {
 
   return (
     <ul className={styles.list}>
-      {Object.values(voters).map((voter) => {
+      {voters.map((voter) => {
         const vote = room.revealed
           ? voter.vote ?? "No Vote"
           : (voter.vote && "Voted") || "Not Voted";

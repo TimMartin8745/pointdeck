@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { queryClient } from "./Providers";
 import type { Room, User } from "@/types";
 import { roomSchema, userSchema } from "@/types";
+import { updateCache } from "@/utils";
 
 const Channels = ({
   roomId,
@@ -55,13 +56,9 @@ const Channels = ({
           return;
         }
 
-        queryClient.setQueryData<Record<string, User>>(
+        queryClient.setQueryData<User[]>(
           ["users", data.spectator ? "spectators" : "voters"],
-          (oldData) =>
-            oldData && {
-              ...oldData,
-              [data.id]: data,
-            }
+          (oldData) => updateCache(oldData, data, "id")
         );
       }
     )
